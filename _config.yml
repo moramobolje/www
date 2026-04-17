@@ -1,0 +1,7 @@
+title: Moramo bolje
+baseurl: "" # leave empty for your custom domain
+url: "https://www.moramobolje.com" # or your actual domain
+
+# This ensures Jekyll doesn't skip your new JS folder
+include:
+  - assets
