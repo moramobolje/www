@@ -1,17 +1,83 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ page.title }} | {{ site.title }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} | Moramo bolje!</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+
     {% include analytics.html %}
 </head>
-<body>
-    <div class="container py-5">
+<body class="bg-light">
+
+    <main>
         {{ content }}
+    </main>
+
+    <button type="button" class="btn btn-white rounded-circle shadow-sm d-flex align-items-center justify-content-center border" 
+            id="cookie-settings-trigger" 
+            style="position: fixed; bottom: 25px; right: 25px; z-index: 9999; width: 55px; height: 55px; background-color: white;">
+        <i class="bi bi-cookie text-secondary fs-3"></i>
+    </button>
+
+    <div class="modal fade" id="cookie-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold d-flex align-items-center">
+                        <i class="bi bi-cookie text-secondary me-2"></i> Postavke kolačića
+                    </h5>
+                </div>
+                <div class="modal-body px-4 py-3">
+                    <p class="text-muted small mb-4">Cenimo vašu privatnost. Izaberite koje kategorije tehnologija merenja želite da omogućite.</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-3">
+                        <div>
+                            <div class="fw-bold small">Neophodni</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">Potrebni za rad osnovnih funkcija sajta.</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="check-necessary" checked disabled>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-3">
+                        <div>
+                            <div class="fw-bold small">Analitika</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">Pomažu nam da poboljšamo korisničko iskustvo.</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="check-analytics" checked>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-0 p-3 bg-light rounded-3">
+                        <div>
+                            <div class="fw-bold small">Marketing</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">Prilagođavanje oglasa vašim interesovanjima.</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="check-marketing" checked>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 flex-column">
+                    <button type="button" id="btn-accept-all" class="btn btn-primary w-100 mb-2 fw-semibold py-2">Prihvati sve</button>
+                    <div class="d-flex gap-2 w-100">
+                        <button type="button" id="btn-save-settings" class="btn btn-outline-secondary btn-sm flex-grow-1 py-2">Sačuvaj izbor</button>
+                        <button type="button" id="btn-reject-all" class="btn btn-light text-danger btn-sm flex-grow-1 py-2 border">Odbij sve</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ '/assets/js/cookie_consent_v2.js' | relative_url }}"></script>
+
 </body>
 </html>
