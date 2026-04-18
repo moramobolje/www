@@ -1,0 +1,52 @@
+---
+layout: default
+title: BEG Live Flights
+---
+
+<link rel="stylesheet" href="beg_live.css">
+
+<div class="container-fluid px-2 px-md-5">
+  <header class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-2 mb-3 border-bottom border-2 border-dark mt-4">
+    <div class="d-flex align-items-center mb-3 mb-md-0">
+      <i class="bi bi-airplane-fill fs-2 me-3 text-dark"></i>
+      <div>
+        <h1 class="h3 fw-bold m-0 text-uppercase tracking-tight">Belgrade (BEG)</h1>
+        <p class="text-muted small m-0 fw-bold text-uppercase">
+            <span id="live-date"></span> @ <span id="live-clock"></span>
+        </p>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap align-items-center gap-2">
+      <button class="btn btn-outline-success refresh-btn order-2 order-md-1" onclick="refreshData()">
+        <i class="bi bi-arrow-clockwise" id="refresh-icon"></i>
+      </button>
+
+      <div class="dropdown order-1 order-md-2">
+        <button class="btn btn-dark dropdown-toggle btn-sm px-3" type="button" id="dateMenu" data-bs-toggle="dropdown">
+          <i class="bi bi-calendar-event me-2"></i> <span id="selected-date-label">Date</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow" id="day-dropdown"></ul>
+      </div>
+
+      <div id="type-tabs" class="d-flex gap-2 order-3" style="display:none !important;">
+        <button id="btn-dep" class="btn btn-pill btn-navy active" onclick="switchType('DEPARTURES', this)">
+          DEP
+        </button>
+        <button id="btn-arr" class="btn btn-pill btn-navy" onclick="switchType('ARRIVALS', this)">
+          ARR
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <div id="loading-zone" class="py-5 text-center">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+  
+  <div class="table-container">
+    <main id="flight-table-container"></main>
+  </div>
+</div>
+
+<script src="beg_live.js"></script>
