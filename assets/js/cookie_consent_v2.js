@@ -73,6 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const result = await response.json();
             const country = result.data.locations[0].country;
 
+            // Regulisane zemlje uključujući Srbiju i EU
             const regulated = ['RS', 'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'NO', 'IS', 'LI', 'CH', 'GB'];
 
             if (regulated.includes(country)) {

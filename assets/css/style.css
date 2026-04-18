@@ -1,0 +1,37 @@
+/* =========================================
+   Global Typography
+   ========================================= */
+body {
+    font-family: 'Red Hat Text', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================================
+   Homepage Hero Styling
+   ========================================= */
+.hero-h1 {
+    font-weight: 900 !important;
+    letter-spacing: -0.05rem;
+    color: #212529;
+}
+
+/* =========================================
+   Cookie Consent UI Enhancements
+   ========================================= */
+/* Hover effect for the floating trigger button */
+.floating-cookie-btn {
+    transition: all 0.3s ease;
+}
+
+.floating-cookie-btn:hover {
+    transform: scale(1.08);
+    background-color: #f8f9fa !important;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+/* Customizing the switch colors for a sharper look */
+.custom-switch:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
