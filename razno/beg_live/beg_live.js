@@ -176,15 +176,17 @@ function renderTable() {
     let rowClass = (closestRowId === null && f.st >= currentTime) ? "current-row" : "";
     if (rowClass === "current-row") closestRowId = `row-${index}`;
 
-    html += `<tr id="row-${index}" class="${rowClass}">
-      <td data-label="Scheduled">${f.st}</td>
-      <td data-label="Estimated" class="text-muted small">${f.et}</td>
-      <td data-label="Actual" class="fw-bold text-success">${f.at !== "--:--" ? f.at : ""}</td>
-      <td data-label="${currentType === 'ARRIVALS' ? 'Origin' : 'Destination'}" class="${destClass}">${indicator}${f.dest}</td>
-      <td data-label="Flight" class="fn-cell ${destClass}" title="${companyName}">${f.fn}</td>
-      <td data-label="Aircraft" class="ac-cell">${aircraftDisplay}</td>
-      <td data-label="Gate"><div class="d-flex align-items-center"><span class="gate-box">${f.gate || '-'}</span>${busIcon}</div></td>
-      <td data-label="Status" class="${remarkClass}">${f.remarkText.toUpperCase()}${offsetText}</td></tr>`;
+    // FIND THIS SECTION IN YOUR JS AND UPDATE THE ROW GENERATION:
+        html += `<tr id="row-${index}" class="${rowClass} mobile-row" onclick="this.classList.toggle('is-expanded')">
+        <td data-label="Scheduled">${f.st}</td>
+        <td data-label="Estimated" class="text-muted small">${f.et}</td>
+        <td data-label="Actual" class="fw-bold text-success">${f.at !== "--:--" ? f.at : ""}</td>
+        <td data-label="${currentType === 'ARRIVALS' ? 'Origin' : 'Destination'}" class="${destClass}">${indicator}${f.dest}</td>
+        <td data-label="Flight" class="fn-cell ${destClass}" title="${companyName}">${f.fn}</td>
+        <td data-label="Aircraft" class="ac-cell">${aircraftDisplay}</td>
+        <td data-label="Gate"><div class="d-flex align-items-center"><span class="gate-box">${f.gate || '-'}</span>${busIcon}</div></td>
+        <td data-label="Status" class="${remarkClass}">${f.remarkText.toUpperCase()}${offsetText}</td>
+        </tr>`;
   });
   
   container.innerHTML = html + `</tbody></table>`;
