@@ -178,18 +178,18 @@ function renderTable() {
 
     // FIND THIS SECTION IN YOUR JS AND UPDATE THE ROW GENERATION:
 // INSIDE your flights.forEach loop, update the HTML generation:
-        html += `<tr id="row-${index}" class="${rowClass} mobile-row" onclick="this.classList.toggle('is-expanded')">
-        <td data-label="Scheduled"><small class="text-muted me-1">SCH</small>${f.st}</td>
-        <td data-label="Estimated"><small class="text-muted me-1">EST</small>${f.et}</td>
-        <td data-label="Actual" class="fw-bold text-success"><small class="text-muted me-1">ACT</small>${f.at !== "--:--" ? f.at : ""}</td>
-        <td data-label="${currentType === 'ARRIVALS' ? 'Origin' : 'Destination'}" class="${destClass}">${indicator}${f.dest}</td>
-        <td data-label="Status" class="${remarkClass}">${f.remarkText.toUpperCase()}${offsetText}</td>
-        
-        <td data-label="Aircraft" class="ac-cell-mobile">${aircraftDisplay}</td>
+    html += `<tr id="row-${index}" class="${rowClass} mobile-row" onclick="this.classList.toggle('is-expanded')">
+    <td data-label="Scheduled"><small class="text-muted me-1">SCH</small>${f.st}</td>
+    <td data-label="Estimated"><small class="text-muted me-1">EST</small>${f.et}</td>
+    <td data-label="Actual" class="fw-bold text-success"><small class="text-muted me-1">ACT</small>${f.at !== "--:--" ? f.at : ""}</td>
+    <td data-label="${currentType === 'ARRIVALS' ? 'Origin' : 'Destination'}" class="${destClass}">${indicator}${f.dest}</td>
+    <td data-label="Status" class="${remarkClass}">${f.remarkText.toUpperCase()}${offsetText}</td>
+    
+    <td data-label="Aircraft" class="ac-cell-mobile">${aircraftDisplay}</td>
 
-        <td data-label="Flight" class="fn-cell-mobile ${destClass}" title="${companyName}">${f.fn}</td>
-        <td data-label="Gate"><div class="d-flex align-items-center"><span class="gate-box">${f.gate || '-'}</span>${busIcon}</div></td>
-        </tr>`;
+    <td data-label="Flight" class="fn-cell-mobile ${destClass}" title="${companyName}">${f.fn}</td>
+    <td data-label="Gate"><div class="d-flex align-items-center"><span class="gate-box">${f.gate || '-'}</span>${busIcon}</div></td>
+    </tr>`;
   });
   
   container.innerHTML = html + `</tbody></table>`;
