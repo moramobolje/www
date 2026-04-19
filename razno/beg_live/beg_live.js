@@ -129,10 +129,11 @@ function renderTable() {
   const flights = schedule[currentDay][currentType].sort((a, b) => a.st.localeCompare(b.st));
   const currentTime = new Date().getHours().toString().padStart(2, '0') + ":" + new Date().getMinutes().toString().padStart(2, '0');
 
+  // Widths: Times 8%, Flight 9%, Aircraft 18%, Status 19%, Destination 20%
   let html = `<table class="table table-hover align-middle m-0"><thead><tr>
-    <th width="9%">SCHEDULED</th><th width="9%">ESTIMATED</th><th width="9%">ACTUAL</th>
-    <th width="20%">${currentType === 'ARRIVALS' ? 'ORIGIN' : 'DESTINATION'}</th>
-    <th width="11%">FLIGHT</th><th width="15%">AIRCRAFT</th><th width="10%">GATE</th><th width="17%">STATUS</th>
+    <th width="8%">SCHEDULED</th><th width="8%">ESTIMATED</th><th width="8%">ACTUAL</th>
+    <th width="22%">${currentType === 'ARRIVALS' ? 'ORIGIN' : 'DESTINATION'}</th>
+    <th width="9%">FLIGHT</th><th width="16%">AIRCRAFT</th><th width="10%">GATE</th><th width="19%">STATUS</th>
   </tr></thead><tbody>`;
 
   let closestRowId = null;
@@ -142,19 +143,12 @@ function renderTable() {
     const companyName = iataKey[prefix3] || iataKey[prefix2] || "Airline";
 
     const cleanAc = String(f.ac).trim().toUpperCase();
-    let aircraftDisplay = cleanAc;
-    
-    if (iataPlane[cleanAc]) {
-        aircraftDisplay = iataPlane[cleanAc];
-    } else if (cleanAc.startsWith('3')) {
-        aircraftDisplay = "Airbus A" + cleanAc;
-    } else if (cleanAc.startsWith('7')) {
-        aircraftDisplay = "Boeing " + cleanAc;
-    }
+    let aircraftDisplay = iataPlane[cleanAc] || cleanAc;
 
     let remarkClass = (f.remarkText.toUpperCase().includes("ON TIME")) ? "status-ONT" : `status-${f.remarkCode}`;
     if (currentType === 'ARRIVALS' && f.remarkCode === 'DLY') remarkClass = "status-DLY-orange";
     
+    // HIGHLIGHT LOGIC: Applied to both Destination and Flight Number
     let destClass = "fw-bold text-uppercase " + ((f.remarkCode === 'DEP' || f.remarkCode === 'LAN' || f.remarkCode === 'ARR') ? "text-success-city" : "");
     
     let indicator = "";
@@ -174,9 +168,7 @@ function renderTable() {
       const unit = absDiff === 1 ? "min" : "mins";
       if (diff < 0) offsetText = ` <span class="offset-text offset-early">${absDiff} ${unit} early</span>`;
       else if (diff > 0) {
-        let delayColorClass = "offset-late-low";
-        if (diff > 30) delayColorClass = "offset-late-high";
-        else if (diff > 15) delayColorClass = "offset-late-mid";
+        let delayColorClass = diff > 30 ? "offset-late-high" : (diff > 15 ? "offset-late-mid" : "offset-late-low");
         offsetText = ` <span class="offset-text ${delayColorClass}">${absDiff} ${unit} late</span>`;
       }
     }
@@ -189,8 +181,8 @@ function renderTable() {
       <td data-label="Estimated" class="text-muted small">${f.et}</td>
       <td data-label="Actual" class="fw-bold text-success">${f.at !== "--:--" ? f.at : ""}</td>
       <td data-label="${currentType === 'ARRIVALS' ? 'Origin' : 'Destination'}" class="${destClass}">${indicator}${f.dest}</td>
-      <td data-label="Flight" class="fn-cell" title="${companyName}">${f.fn}</td>
-      <td data-label="Aircraft" class="fw-normal small text-secondary">${aircraftDisplay}</td>
+      <td data-label="Flight" class="fn-cell ${destClass}" title="${companyName}">${f.fn}</td>
+      <td data-label="Aircraft" class="ac-cell">${aircraftDisplay}</td>
       <td data-label="Gate"><div class="d-flex align-items-center"><span class="gate-box">${f.gate || '-'}</span>${busIcon}</div></td>
       <td data-label="Status" class="${remarkClass}">${f.remarkText.toUpperCase()}${offsetText}</td></tr>`;
   });

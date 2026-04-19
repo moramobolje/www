@@ -6,39 +6,47 @@ title: BEG Live Flights
 <link rel="stylesheet" href="beg_live.css">
 
 <div class="container-fluid px-2 px-md-5">
-  <header class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-2 mb-3 border-bottom border-2 border-dark mt-4">
+  <header class="flight-header mt-4">
+  <div class="header-top-row d-flex flex-column flex-md-row align-items-md-center justify-content-between">
     <div class="d-flex align-items-center mb-3 mb-md-0">
-      <i class="bi bi-airplane-fill fs-2 me-3 text-dark"></i>
+      <div class="logo-icon-wrapper me-3">
+        <i class="bi bi-airplane-fill fs-3 text-white"></i>
+      </div>
       <div>
-        <h1 class="h3 fw-bold m-0 text-uppercase tracking-tight">Belgrade (BEG)</h1>
-        <p class="text-muted small m-0 fw-bold text-uppercase">
-            <span id="live-date"></span> @ <span id="live-clock"></span>
-        </p>
+        <h1 class="h4 fw-bold m-0 text-uppercase tracking-tight">Belgrade <span class="text-secondary fw-normal">Airport</span></h1>
+        <div class="live-status-bar small fw-bold text-uppercase">
+          <span class="refresh-label me-2">Data from:</span>
+          <span id="live-date"></span> 
+          <span class="mx-2 symbol-align">@</span> 
+          <span id="live-clock"></span>
+        </div>
       </div>
     </div>
 
-    <div class="d-flex flex-wrap align-items-center gap-2">
-      <button class="btn btn-outline-success refresh-btn order-2 order-md-1" onclick="refreshData()">
+    <div class="header-controls d-flex flex-wrap align-items-center gap-2">
+      <button class="btn btn-refresh-green shadow-sm" onclick="refreshData()" title="Click to update flight data">
         <i class="bi bi-arrow-clockwise" id="refresh-icon"></i>
       </button>
 
-      <div class="dropdown order-1 order-md-2">
-        <button class="btn btn-dark dropdown-toggle btn-sm px-3" type="button" id="dateMenu" data-bs-toggle="dropdown">
-          <i class="bi bi-calendar-event me-2"></i> <span id="selected-date-label">Date</span>
+      <div class="dropdown">
+        <button class="btn btn-control dropdown-toggle shadow-sm" type="button" id="dateMenu" data-bs-toggle="dropdown">
+          <i class="bi bi-calendar3 me-2"></i><span id="selected-date-label">Date</span>
         </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow" id="day-dropdown"></ul>
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0" id="day-dropdown"></ul>
       </div>
 
-      <div id="type-tabs" class="d-flex gap-2 order-3" style="display:none !important;">
-        <button id="btn-dep" class="btn btn-pill btn-navy active" onclick="switchType('DEPARTURES', this)">
-          DEP
-        </button>
-        <button id="btn-arr" class="btn btn-pill btn-navy" onclick="switchType('ARRIVALS', this)">
-          ARR
-        </button>
+      <div id="type-tabs" class="btn-group shadow-sm" role="group">
+        <button id="btn-dep" class="btn btn-toggle active" onclick="switchType('DEPARTURES', this)">Departures</button>
+        <button id="btn-arr" class="btn btn-toggle" onclick="switchType('ARRIVALS', this)">Arrivals</button>
       </div>
     </div>
-  </header>
+  </div>
+</header>
+
+<div class="refresh-notice-bar d-flex align-items-center mt-2 mb-4">
+    <i class="bi bi-info-circle-fill me-2"></i>
+    <span>Flight data does not update automatically. Please use the <strong>green refresh button</strong> to see the latest status.</span>
+</div>
   
   <div id="loading-zone" class="py-5 text-center">
     <div class="spinner-border text-primary" role="status"></div>
