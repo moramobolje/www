@@ -259,126 +259,24 @@ body {
 
 /* --- RESPONSIVE MOBILE VIEW --- */
 @media (max-width: 768px) {
+
+    /* Hide Table Headers on Mobile */
+    .table thead { display: none; }
+    
     .container-fluid {
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
     }
-
     .flight-header { padding: 1rem; }
     .header-controls { width: 100%; justify-content: space-between; margin-top: 10px; }
     .btn-group { flex-grow: 1; }
     .btn-toggle { flex-grow: 1; font-size: 0.7rem; }
     .table-container { max-height: none; border: none; background: transparent; box-shadow: none !important; }
-
-    /* Table Reset for Cards */
     .table thead { display: none; }
     .table, .table tbody, .table tr, .table td { display: block; width: 100%; }
-
-    /* The Card Container */
-    .table tr {
-        margin-bottom: 0.75rem;
-        border: 1px solid #dee2e6;
-        border-radius: 12px;
-        background: #fff;
-        padding: 12px;
-        position: relative;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        display: flex;
-        flex-wrap: wrap;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    /* LINE 1: Essential Info (Always Visible) */
-    .table td {
-        border: none;
-        padding: 2px 0;
-        width: auto;
-        display: inline-block;
-    }
-
-    /* Hide the "label:" prefix for the top line items */
-    .table td::before { display: none; }
-
-    /* Time formatting (SCH/EST/ACT) */
-    .table td[data-label="Scheduled"],
-    .table td[data-label="Estimated"],
-    .table td[data-label="Actual"] {
-        font-size: 0.75rem;
-        margin-right: 10px;
-    }
-
-    /* Destination/Origin - Full width on line 1.5 */
-    .table td[data-label="Destination"],
-    .table td[data-label="Origin"] {
-        display: block;
-        width: 100% !important;
-        font-size: 1.05rem;
-        margin: 4px 0;
-        white-space: normal; /* Allow wrap if very long on small screens */
-    }
-
-    /* Status - Visible on line 1 */
-    .table td[data-label="Status"] {
-        display: block;
-        width: 100% !important;
-        font-size: 0.8rem;
-        margin-bottom: 2px;
-    }
-
-    /* LINE 2: Collapsible Details (Hidden by Default) */
-    .table td[data-label="Flight"],
-    .table td[data-label="Aircraft"],
-    .table td[data-label="Gate"] {
-        display: none; 
-        width: 100% !important;
-        font-size: 0.75rem;
-        color: #6c757d;
-        padding: 6px 8px !important;
-        background: #f8f9fa;
-        margin-top: 4px;
-        border-radius: 4px;
-    }
-
-    /* Re-enable labels for expanded content only */
-    .table tr.is-expanded td[data-label="Flight"]::before,
-    .table tr.is-expanded td[data-label="Aircraft"]::before,
-    .table tr.is-expanded td[data-label="Gate"]::before {
-        display: inline;
-        content: attr(data-label) ": ";
-        font-weight: 700;
-        color: #495057;
-    }
-
-    /* Expand Animation/State */
-    .table tr.is-expanded {
-        border-color: #198754;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .table tr.is-expanded td[data-label="Flight"],
-    .table tr.is-expanded td[data-label="Aircraft"],
-    .table tr.is-expanded td[data-label="Gate"] {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    /* Indicator for clickability */
-    .table tr::after {
-        content: '\F282'; /* Bootstrap BI-Chevron-Down */
-        font-family: "bootstrap-icons";
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        font-size: 0.8rem;
-        color: #dee2e6;
-        transition: transform 0.3s;
-    }
-
-    .table tr.is-expanded::after {
-        transform: rotate(180deg);
-        color: #198754;
-    }
+    .table tr { margin-bottom: 1rem; border: 1px solid #dee2e6; border-radius: 12px; background: #fff; padding: 12px; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .table td { border: none; padding: 6px 0; display: flex; justify-content: space-between; align-items: center; }
+    .table td::before { content: attr(data-label); font-weight: 600; font-size: 0.7rem; color: #6c757d; text-transform: uppercase; }
 }
 
 /* Instructional Notice Bar */
