@@ -97,7 +97,10 @@ h1.h3 { font-size: 1.25rem !important; font-weight: 700; }
 
 /* RESPONSIVE ADDITIONS */
 @media (max-width: 768px) {
-    .container-fluid { px: 2 !important; }
+    .container-fluid {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+}
     
     .table-container { max-height: none; border: none; background: transparent; box-shadow: none !important; }
 
