@@ -301,6 +301,10 @@ body {
     border-bottom-right-radius: 0;
 }
 
+.flight-header h1 {
+    font-size: 24px !important;
+}
+
 /* Connect the notice bar to the header visually */
 .refresh-notice-bar {
     border-top-left-radius: 0;
@@ -316,4 +320,19 @@ body {
     line-height: 1;
     position: relative;
     top: -1px; /* Precision nudge for the Overpass Mono font */
+}
+
+/* Ensure only the active button has the white background */
+.toggle-container button.active {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* Base style for the buttons when they are not active */
+.toggle-container button {
+    background-color: transparent;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
