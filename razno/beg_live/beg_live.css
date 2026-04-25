@@ -237,7 +237,8 @@ body {
 .status-LAN, .status-ARR, .status-DEP { color: #198754 !important; font-weight: bold; }
 .status-NBD, .status-GTG { color: #0d6efd !important; font-weight: bold; }
 .status-LAC { color: #dc3545 !important; font-weight: bold; animation: text-blink 1.2s linear infinite; }
-.status-GTC, .status-DLY, .status-DLY-orange { color: #fd7e14 !important; font-weight: bold; }
+.status-DLY, .status-DLY-orange { color: #fd7e14 !important; font-weight: bold; }
+.status-GTC { color: #2a2a2a !important; font-weight: bold; }
 
 /* Destination Success Color - Brought Back */
 .text-success-city { color: #198754 !important; font-weight: 700; }
