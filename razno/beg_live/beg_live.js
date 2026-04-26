@@ -154,56 +154,60 @@ function renderTable() {
 
   let closestRowId = null;
   flights.forEach((f, index) => {
-    const prefix2 = f.fn.substring(0, 2).toUpperCase();
-    const prefix3 = f.fn.substring(0, 3).toUpperCase();
-    const companyName = iataKey[prefix3] || iataKey[prefix2] || "Airline";
+        const prefix2 = f.fn.substring(0, 2).toUpperCase();
+        const prefix3 = f.fn.substring(0, 3).toUpperCase();
+        const companyName = iataKey[prefix3] || iataKey[prefix2] || "Airline";
 
-    const cleanAc = String(f.ac).trim().toUpperCase();
-    let aircraftDisplay = iataPlane[cleanAc] || cleanAc;
+        const cleanAc = String(f.ac).trim().toUpperCase();
+        let aircraftDisplay = iataPlane[cleanAc] || cleanAc;
 
-    let remarkClass = (f.remarkText.toUpperCase().includes("ON TIME")) ? "status-ONT" : `status-${f.remarkCode}`;
-    if (currentType === 'ARRIVALS' && f.remarkCode === 'DLY') remarkClass = "status-DLY-orange";
-    
-    // HIGHLIGHT LOGIC: Applied to both Destination and Flight Number
-    let destClass = "fw-bold text-uppercase " + ((f.remarkCode === 'DEP' || f.remarkCode === 'LAN' || f.remarkCode === 'ARR') ? "text-success-city" : "");
-    
-    let indicator = "";
-    if (f.remarkCode === 'LAC') indicator = `<span class="status-dot dot-pulse-red"></span>`;
-    else if (f.remarkCode === 'NBD') indicator = `<span class="status-dot dot-pulse-blue"></span>`;
-    else if (f.remarkCode === 'GTC') indicator = `<i class="bi bi-lock-fill status-icon-inline text-gtc-lock"></i>`;
-    else if (f.remarkCode === 'GTG' || f.remarkText.toUpperCase().includes("GO TO GATE")) {
-        indicator = `<span class="status-dot dot-static-blue"></span>`;
-    }
+        let remarkClass = (f.remarkText.toUpperCase().includes("ON TIME")) ? "status-ONT" : `status-${f.remarkCode}`;
+        if (currentType === 'ARRIVALS' && f.remarkCode === 'DLY') remarkClass = "status-DLY-orange";
+        
+        let destClass = "fw-bold text-uppercase " + ((f.remarkCode === 'DEP' || f.remarkCode === 'LAN' || f.remarkCode === 'ARR') ? "text-success-city" : "");
+        
+        let indicator = "";
+        if (f.remarkCode === 'LAC') indicator = `<span class="status-dot dot-pulse-red"></span>`;
+        else if (f.remarkCode === 'NBD') indicator = `<span class="status-dot dot-pulse-blue"></span>`;
+        else if (f.remarkCode === 'GTC') indicator = `<i class="bi bi-lock-fill status-icon-inline text-gtc-lock"></i>`;
+        else if (f.remarkCode === 'GTG' || f.remarkText.toUpperCase().includes("GO TO GATE")) {
+            indicator = `<span class="status-dot dot-static-blue"></span>`;
+        }
 
-    let busIcon = /[A-Z]$/i.test(String(f.gate).trim()) ? `<i class="bi bi-bus-front ms-2 text-muted bus-icon-style" title="Remote position" style="font-size: 0.8rem;"></i>` : "";
-    
-    let offsetText = "";
-    const diff = getDiffInMinutes(f.st, f.at);
-    if (diff !== null && (f.remarkCode === 'DEP' || f.remarkCode === 'LAN' || f.remarkCode === 'ARR' || f.remarkCode === 'DLY')) {
-      const absDiff = Math.abs(diff);
-      const unit = absDiff === 1 ? "min" : "mins";
-      if (diff < 0) offsetText = ` <span class="offset-text offset-early">${absDiff} ${unit} early</span>`;
-      else if (diff > 0) {
-        let delayColorClass = diff > 30 ? "offset-late-high" : (diff > 15 ? "offset-late-mid" : "offset-late-low");
-        offsetText = ` <span class="offset-text ${delayColorClass}">${absDiff} ${unit} late</span>`;
-      }
-    }
+        let busIcon = /[A-Z]$/i.test(String(f.gate).trim()) ? `<i class="bi bi-bus-front ms-2 text-muted bus-icon-style" title="Remote position" style="font-size: 0.8rem;"></i>` : "";
+        
+        let offsetText = "";
+        const diff = getDiffInMinutes(f.st, f.at);
+        if (diff !== null && (f.remarkCode === 'DEP' || f.remarkCode === 'LAN' || f.remarkCode === 'ARR' || f.remarkCode === 'DLY')) {
+          const absDiff = Math.abs(diff);
+          const unit = absDiff === 1 ? "min" : "mins";
+          if (diff < 0) offsetText = ` <span class="offset-text offset-early">${absDiff} ${unit} early</span>`;
+          else if (diff > 0) {
+            let delayColorClass = diff > 30 ? "offset-late-high" : (diff > 15 ? "offset-late-mid" : "offset-late-low");
+            offsetText = ` <span class="offset-text ${delayColorClass}">${absDiff} ${unit} late</span>`;
+          }
+        }
 
-    let rowClass = (closestRowId === null && f.st >= currentTime) ? "current-row" : "";
-    if (rowClass === "current-row") closestRowId = `row-${index}`;
+        let rowClass = (closestRowId === null && f.st >= currentTime) ? "current-row" : "";
+        if (rowClass === "current-row") closestRowId = `row-${index}`;
 
-    // FIND THIS SECTION IN YOUR JS AND UPDATE THE ROW GENERATION:
+        // --- UPDATED ROW GENERATION ---
         html += `<tr id="row-${index}" class="${rowClass} mobile-row" onclick="this.classList.toggle('is-expanded')">
-        <td data-label="Scheduled">${f.st}</td>
-        <td data-label="Estimated" class="text-muted small">${f.et}</td>
-        <td data-label="Actual" class="fw-bold text-success">${f.at !== "--:--" ? f.at : ""}</td>
-        <td data-label="${currentType === 'ARRIVALS' ? 'Origin' : 'Destination'}" class="${destClass}">${indicator}${f.dest}</td>
-        <td data-label="Flight" class="fn-cell ${destClass}" title="${companyName}">${f.fn}</td>
-        <td data-label="Aircraft" class="ac-cell">${aircraftDisplay}</td>
-        <td data-label="Gate"><div class="d-flex align-items-center"><span class="gate-box">${f.gate || '-'}</span>${busIcon}</div></td>
-        <td data-label="Status" class="${remarkClass}">${f.remarkText.toUpperCase()}${offsetText}</td>
+            <td data-label="Scheduled">${f.st}</td>
+            <td data-label="Estimated" class="text-muted small">${f.et}</td>
+            <td data-label="Actual" class="fw-bold text-success">${f.at !== "--:--" ? f.at : ""}</td>
+            <td data-label="${currentType === 'ARRIVALS' ? 'Origin' : 'Destination'}" class="${destClass}">${indicator}${f.dest}</td>
+            
+            <td data-label="Flight" class="fn-cell ${destClass}" title="${companyName}">
+                ${f.fn} 
+                <span class="mobile-ac-inline">${cleanAc}</span>
+            </td>
+            
+            <td data-label="Aircraft" class="ac-cell">${aircraftDisplay}</td>
+            <td data-label="Gate"><div class="d-flex align-items-center"><span class="gate-box">${f.gate || '-'}</span>${busIcon}</div></td>
+            <td data-label="Status" class="${remarkClass}">${f.remarkText.toUpperCase()}${offsetText}</td>
         </tr>`;
-  });
+    });
   
   container.innerHTML = html + `</tbody></table>`;
   if (closestRowId) setTimeout(() => document.getElementById(closestRowId)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
