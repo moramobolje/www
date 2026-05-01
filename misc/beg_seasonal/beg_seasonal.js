@@ -19,6 +19,7 @@ async function fetchTimetable() {
             const vl = (l.getElementsByTagName('VEZAN_LET')[0]?.textContent || '').trim();
             return vl === '' || br === vl;
         }).map(l => ({
+            // Uzimamo TIP letova (ID, IA, DD, DA)
             tip: l.getElementsByTagName('TIP')[0]?.textContent,
             dest: l.getElementsByTagName('DESTINACIJA')[0]?.textContent,
             vreme: l.getElementsByTagName('VREME')[0]?.textContent,
@@ -53,7 +54,13 @@ function render() {
     const container = document.getElementById('timetable-container');
     container.innerHTML = '';
     
-    const modeFlights = window.allFlights.filter(f => f.tip === currentMode);
+    // Filtriramo letove tako da obuhvatimo i International i Domestic
+    const modeFlights = window.allFlights.filter(f => {
+        if (currentMode === 'ID') return f.tip === 'ID' || f.tip === 'DD';
+        if (currentMode === 'IA') return f.tip === 'IA' || f.tip === 'DA';
+        return false;
+    });
+
     const groups = {};
     
     modeFlights.forEach(f => {

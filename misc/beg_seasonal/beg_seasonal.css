@@ -63,6 +63,7 @@ body {
     background: #343a40;
     color: white;
     border: none;
+    font-family: var(--primary-font);
     padding: 8px 24px;
     font-weight: 700;
     font-size: 12px;
@@ -74,7 +75,7 @@ body {
 
 .alert-bar {
     background: #e9ecef;
-    padding: 6px 20px;
+    padding: 0px 20px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -134,8 +135,8 @@ body {
 .col-days   { width: 80px; letter-spacing: 1px; font-weight: 600; }
 .col-time   { width: 70px; font-weight: 700; }
 .col-flight { width: 90px; font-weight: 700; color: #000; }
-.col-val    { width: 95px; color: #333; }
-.col-note   { font-family: var(--primary-font); font-size: 9px; color: var(--remark-red); font-style: italic; }
+.col-val    { width: 95px; color: #555; }
+.col-note   { font-family: var(--primary-font); font-size: 10px !important; color: var(--remark-red); font-style: italic; }
 
 .loader { padding: 30px; text-align: center; color: #666; font-size: 12px; }
 
