@@ -1,0 +1,203 @@
+:root {
+    --primary-font: 'Inter', sans-serif;
+    --mono-font: 'Overpass Mono', monospace;
+    --airport-green: #198754;
+    --hover-bg: #eceef0;
+    --remark-red: #dc3545;
+}
+
+body {
+    font-family: var(--primary-font);
+    background-color: #f1f3f4;
+    margin: 15px;
+    color: #000;
+}
+
+.container { max-width: 1400px; margin: 0 auto; }
+
+/* Desktop Header */
+.header-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+}
+
+.brand { flex: 1; display: flex; align-items: center; gap: 12px; }
+.logo-sq {
+    background: #1a1a1a;
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.main-title { font-size: 20px; font-weight: 700; margin: 0; line-height: 1; }
+.main-title .light { font-weight: 400; color: #6c757d; }
+.data-info { color: var(--airport-green); font-weight: 700; font-size: 10px; margin: 3px 0 0 0; }
+
+.header-center { flex: 1; text-align: center; }
+.mode-title { 
+    margin: 0; 
+    font-size: 18px; 
+    font-weight: 800; 
+    letter-spacing: 2px; 
+    color: #1a1a1a;
+    text-transform: uppercase;
+}
+
+.actions { flex: 1; display: flex; justify-content: flex-end; }
+.nav-btn {
+    background: #343a40;
+    color: white;
+    border: none;
+    padding: 8px 24px;
+    font-weight: 700;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.alert-bar {
+    background: #e9ecef;
+    padding: 6px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10.5px;
+    border-top: 1px solid #dee2e6;
+}
+
+.beg-link { color: inherit; text-decoration: underline; }
+
+/* Desktop Table (Desktop Intact) */
+.dest-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-bottom: none;
+}
+
+.dest-row:last-child { border-bottom: 1px solid #dee2e6; }
+
+.dest-name {
+    padding: 8px 10px;
+    font-weight: 700;
+    font-size: 12px;
+    background: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    z-index: 10;
+}
+
+.flights-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.flights-table th {
+    text-align: left;
+    font-size: 10px;
+    color: #adb5bd;
+    padding: 4px 8px;
+    border-bottom: 1px solid #eee;
+    background: #fff;
+    font-weight: 600;
+}
+
+.flights-table td {
+    padding: 3px 8px;
+    font-family: var(--mono-font);
+    font-size: 12px;
+    line-height: 1.2;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.flights-table tr:hover { background-color: var(--hover-bg); }
+
+.col-days   { width: 80px; letter-spacing: 1px; font-weight: 600; }
+.col-time   { width: 70px; font-weight: 700; }
+.col-flight { width: 90px; font-weight: 700; color: #000; }
+.col-val    { width: 95px; color: #333; }
+.col-note   { font-family: var(--primary-font); font-size: 9px; color: var(--remark-red); font-style: italic; }
+
+.loader { padding: 30px; text-align: center; color: #666; font-size: 12px; }
+
+/* --- RESPONSIVE MOBILE FIXES --- */
+
+/* --- RESPONSIVE MOBILE FIXES --- */
+
+@media (max-width: 768px) {
+    body { margin: 8px; }
+    
+    .header-main {
+        flex-direction: column;
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .brand, .header-center, .actions { flex: none; width: 100%; text-align: center; justify-content: center; }
+    .mode-title { font-size: 15px; padding: 5px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+
+    /* Destinacija - fiksna na vrhu dok skroluješ letove te destinacije */
+    .dest-row { grid-template-columns: 1fr; }
+    .dest-name { 
+        position: sticky; 
+        top: 0; 
+        z-index: 20; 
+        font-size: 13px; 
+        padding: 6px 10px;
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    /* Tabela - vraćamo je u jedan red */
+    .flights-table thead { display: none; } /* I dalje sakrivamo header */
+    
+    .flights-table tr {
+        display: flex;
+        flex-wrap: nowrap; /* Sve mora biti u jednom redu */
+        align-items: center;
+        padding: 8px 4px;
+        border-bottom: 1px solid #f1f3f4;
+        gap: 4px;
+    }
+
+    .flights-table td {
+        display: block;
+        padding: 0 !important;
+        border: none;
+        font-size: 11px !important; /* Malo manji font da sve stane */
+    }
+
+    /* Sakrivamo labele iz prethodne verzije jer guše prostor */
+    .flights-table td::before { display: none !important; }
+
+    /* Podešavamo širine kolona da bi stale jedna pored druge */
+    .col-days   { width: 55px !important; letter-spacing: 0; color: #666; }
+    .col-time   { width: 45px !important; font-weight: 700; }
+    .col-flight { width: 65px !important; font-weight: 700; color: var(--airport-green) !important; }
+    .col-val    { width: 75px !important; overflow: hidden; text-overflow: ellipsis; }
+    
+    /* Sakrivamo "Remarks" i drugu "From/To" kolonu na skroz malim ekranima da ne pucaju redovi */
+    @media (max-width: 400px) {
+        .col-note { display: none !important; }
+        .col-val:nth-child(5) { display: none !important; } /* Sakriva "DO" kolonu ako nema mesta */
+    }
+}
