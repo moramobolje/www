@@ -1,0 +1,74 @@
+:root {
+    --primary-color: #6366f1;
+    --bg-light: #f8fafc;
+}
+body {
+    background-color: var(--bg-light);
+    font-family: 'Inter', sans-serif;
+    color: #1e293b;
+}
+.upload-zone {
+    border: 2px dashed #cbd5e1;
+    border-radius: 1rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background: white;
+}
+.upload-zone:hover {
+    border-color: var(--primary-color);
+    background: #f5f3ff;
+}
+.card {
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-radius: 1rem;
+}
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+}
+.btn-primary:hover { background-color: #4f46e5; }
+.form-label { font-weight: 500; font-size: 0.9rem; margin-bottom: 0.3rem; }
+.privacy-badge {
+    font-size: 0.75rem;
+    color: #059669;
+    background: #ecfdf5;
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.file-item {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.file-preview {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    background: #f1f5f9;
+}
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.status-pending { background-color: #94a3b8; }
+.status-processing { background-color: #fbbf24; animation: pulse 1s infinite; }
+.status-complete { background-color: #10b981; }
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}

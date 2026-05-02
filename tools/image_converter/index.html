@@ -1,0 +1,107 @@
+---
+layout: default
+title: Image Converter
+---
+
+<link rel="stylesheet" href="image_converter.css">
+
+<body class="py-5">
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <header class="text-center mb-5">
+                <h1 class="display-5 fw-bold">Image Converter</h1>
+                <div class="mb-2">
+                    <span class="privacy-badge">
+                        <i class="bi bi-shield-check"></i> 
+                        Private, Tracking-Free & 100% Local
+                    </span>
+                </div>
+            </header>
+
+            <div id="uploadSection" class="card p-4 mb-4">
+                <div class="upload-zone p-5 text-center" id="dropZone">
+                    <i class="bi bi-images text-primary" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">Drop images to convert</h4>
+                    <p class="text-muted small">Supports Batch Upload (JPG, PNG, WEBP, AVIF, BMP, GIF)</p>
+                    <input type="file" id="fileInput" class="d-none" accept="image/*" multiple>
+                    <button class="btn btn-outline-primary btn-sm mt-2">Select Files</button>
+                </div>
+            </div>
+
+            <div id="workspaceSection" class="row g-4 d-none">
+                <!-- Settings Column -->
+                <div class="col-md-4">
+                    <div class="card p-4 sticky-top" style="top: 2rem;">
+                        <h5 class="mb-4">Conversion Settings</h5>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Target Format</label>
+                            <select id="targetFormat" class="form-select">
+                                <option value="image/jpeg">JPEG (.jpg)</option>
+                                <option value="image/png">PNG (.png)</option>
+                                <option value="image/webp">WEBP (.webp)</option>
+                                <option value="image/avif">AVIF (.avif)</option>
+                            </select>
+                        </div>
+
+                        <!-- Dynamic Options for Lossy (JPG, WEBP, AVIF) -->
+                        <div id="lossyOptions">
+                            <label class="form-label d-flex justify-content-between">
+                                Quality <span id="qualityVal" class="fw-bold text-primary">85%</span>
+                            </label>
+                            <input type="range" class="form-range" id="qualityRange" min="1" max="100" value="85">
+                            <p class="text-muted smallest" style="font-size: 0.75rem;">Higher quality results in larger file sizes.</p>
+                        </div>
+
+                        <!-- Dynamic Options for Indexed PNG -->
+                        <div id="indexedOptions" class="d-none">
+                            <label class="form-label">Color Limit</label>
+                            <select id="pngColors" class="form-select">
+                                <option value="0">Original (True Color)</option>
+                                <option value="256">256 Colors (Optimized)</option>
+                                <option value="128">128 Colors</option>
+                                <option value="64">64 Colors</option>
+                                <option value="32">32 Colors</option>
+                            </select>
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" id="keepAlpha" checked>
+                                <label class="form-check-label" for="keepAlpha">Keep Transparency</label>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <button id="convertAllBtn" class="btn btn-primary w-100 py-3 mb-2">
+                            <i class="bi bi-gear-wide-connected me-2"></i>Convert All
+                        </button>
+                        
+                        <button id="downloadZipBtn" class="btn btn-outline-success w-100 d-none">
+                            <i class="bi bi-file-earmark-zip me-2"></i>Download ZIP
+                        </button>
+
+                        <button class="btn btn-link btn-sm w-100 text-muted mt-3" onclick="location.reload()">
+                            Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- File List Column -->
+                <div class="col-md-8">
+                    <h5 class="mb-3 d-flex justify-content-between">
+                        Queue <span class="badge bg-secondary" id="fileCount">0 Files</span>
+                    </h5>
+                    <div id="fileList">
+                        <!-- File items will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="image_converter.js"></script>
+
+</body>
+</html>
