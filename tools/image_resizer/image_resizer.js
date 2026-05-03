@@ -25,8 +25,30 @@ let currentRatio = 1;
 let rotation = 0;
 let isCropping = false;
 
-dropZone.onclick = () => fileInput.click();
-fileInput.onchange = (e) => { if (e.target.files[0]) handleFile(e.target.files[0]); };
+// File Upload Handling - Triggered by entire zone or the specific button
+dropZone.onclick = (e) => {
+    if (e.target.tagName !== 'INPUT') fileInput.click();
+};
+
+fileInput.onchange = (e) => { 
+    if (e.target.files[0]) handleFile(e.target.files[0]); 
+};
+
+// Drag and Drop
+dropZone.ondragover = (e) => { 
+    e.preventDefault(); 
+    dropZone.style.borderColor = "var(--primary-color)"; 
+    dropZone.style.background = "#f1f5f9";
+};
+dropZone.ondragleave = () => { 
+    dropZone.style.borderColor = "#cbd5e1"; 
+    dropZone.style.background = "#ffffff";
+};
+dropZone.ondrop = (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = "#cbd5e1";
+    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+};
 
 function handleFile(file) {
     const reader = new FileReader();
@@ -52,15 +74,11 @@ function resetApp() {
     fileInput.value = '';
 }
 
+// UI Toggles
 formatRadios.forEach(radio => {
     radio.onchange = (e) => {
-        if (e.target.value === 'image/jpeg') {
-            jpgOptions.classList.remove('d-none');
-            pngOptions.classList.add('d-none');
-        } else {
-            jpgOptions.classList.add('d-none');
-            pngOptions.classList.remove('d-none');
-        }
+        jpgOptions.classList.toggle('d-none', e.target.value !== 'image/jpeg');
+        pngOptions.classList.toggle('d-none', e.target.value === 'image/jpeg');
     };
 });
 
@@ -85,6 +103,7 @@ function updateMetaAndInputs() {
     originalMeta.innerText = `${w} x ${h}`;
 }
 
+// Input Synchronization
 widthInput.oninput = () => {
     if (aspectRatio.checked) heightInput.value = Math.round(widthInput.value / currentRatio);
 };
@@ -93,6 +112,7 @@ heightInput.oninput = () => {
 };
 qualityRange.oninput = () => qualityVal.innerText = `${qualityRange.value}%`;
 
+// Cropping Logic
 toggleCropBtn.onclick = () => {
     isCropping = !isCropping;
     cropOverlay.style.display = isCropping ? 'block' : 'none';
@@ -128,9 +148,6 @@ function startDrag(e) {
     startH = rect.height;
     startL = rect.left - wrap.left;
     startT = rect.top - wrap.top;
-    if (e.target.classList.contains('crop-handle') || activeDrag === 'move') {
-        if (e.preventDefault) e.preventDefault();
-    }
 }
 
 const onMove = (e) => {
@@ -143,22 +160,17 @@ const onMove = (e) => {
     if (activeDrag === 'move') {
         cropBox.style.left = (startL + dx) + 'px';
         cropBox.style.top = (startT + dy) + 'px';
-    } else if (activeDrag === 'se') {
-        cropBox.style.width = Math.max(20, startW + dx) + 'px';
-        cropBox.style.height = Math.max(20, startH + dy) + 'px';
-    } else if (activeDrag === 'nw') {
-        cropBox.style.width = Math.max(20, startW - dx) + 'px';
-        cropBox.style.height = Math.max(20, startH - dy) + 'px';
-        cropBox.style.left = (startL + dx) + 'px';
-        cropBox.style.top = (startT + dy) + 'px';
-    } else if (activeDrag === 'ne') {
-        cropBox.style.width = Math.max(20, startW + dx) + 'px';
-        cropBox.style.height = Math.max(20, startH - dy) + 'px';
-        cropBox.style.top = (startT + dy) + 'px';
-    } else if (activeDrag === 'sw') {
-        cropBox.style.width = Math.max(20, startW - dx) + 'px';
-        cropBox.style.height = Math.max(20, startH + dy) + 'px';
-        cropBox.style.left = (startL + dx) + 'px';
+    } else {
+        if (activeDrag.includes('e')) cropBox.style.width = Math.max(20, startW + dx) + 'px';
+        if (activeDrag.includes('s')) cropBox.style.height = Math.max(20, startH + dy) + 'px';
+        if (activeDrag.includes('w')) {
+            cropBox.style.width = Math.max(20, startW - dx) + 'px';
+            cropBox.style.left = (startL + dx) + 'px';
+        }
+        if (activeDrag.includes('n')) {
+            cropBox.style.height = Math.max(20, startH - dy) + 'px';
+            cropBox.style.top = (startT + dy) + 'px';
+        }
     }
 };
 
@@ -167,10 +179,11 @@ window.addEventListener('touchmove', onMove, {passive: false});
 window.addEventListener('mouseup', () => activeDrag = null);
 window.addEventListener('touchend', () => activeDrag = null);
 
+// Final Export
 downloadBtn.onclick = () => {
     const selectedFormat = document.querySelector('input[name="format"]:checked').value;
-    const targetW = parseInt(widthInput.value) || originalImg.width;
-    const targetH = parseInt(heightInput.value) || originalImg.height;
+    const targetW = parseInt(widthInput.value);
+    const targetH = parseInt(heightInput.value);
     
     const sourceCanvas = document.createElement('canvas');
     const sCtx = sourceCanvas.getContext('2d');
@@ -194,21 +207,11 @@ downloadBtn.onclick = () => {
     }
 
     if (isCropping) {
-        const previewRect = mainPreview.getBoundingClientRect();
-        const boxRect = cropBox.getBoundingClientRect();
-        
-        const offsetX = boxRect.left - previewRect.left;
-        const offsetY = boxRect.top - previewRect.top;
-        
-        const scaleX = sourceCanvas.width / previewRect.width;
-        const scaleY = sourceCanvas.height / previewRect.height;
-        
-        const sx = offsetX * scaleX;
-        const sy = offsetY * scaleY;
-        const sw = boxRect.width * scaleX;
-        const sh = boxRect.height * scaleY;
-
-        fCtx.drawImage(sourceCanvas, sx, sy, sw, sh, 0, 0, targetW, targetH);
+        const pRect = mainPreview.getBoundingClientRect();
+        const bRect = cropBox.getBoundingClientRect();
+        const scaleX = sourceCanvas.width / pRect.width;
+        const scaleY = sourceCanvas.height / pRect.height;
+        fCtx.drawImage(sourceCanvas, (bRect.left - pRect.left) * scaleX, (bRect.top - pRect.top) * scaleY, bRect.width * scaleX, bRect.height * scaleY, 0, 0, targetW, targetH);
     } else {
         fCtx.drawImage(sourceCanvas, 0, 0, sourceCanvas.width, sourceCanvas.height, 0, 0, targetW, targetH);
     }
@@ -218,23 +221,18 @@ downloadBtn.onclick = () => {
     }
 
     const quality = selectedFormat === 'image/jpeg' ? parseInt(qualityRange.value) / 100 : 1;
-    
-    try {
-        const dataUrl = finalCanvas.toDataURL(selectedFormat, quality);
-        const link = document.createElement('a');
-        link.download = `studio-export-${Date.now()}.${selectedFormat === 'image/jpeg' ? 'jpg' : 'png'}`;
-        link.href = dataUrl;
-        link.click();
-        showStatus("Image ready!", "text-success");
-    } catch (e) {
-        showStatus("Error processing image.", "text-danger");
-    }
+    const dataUrl = finalCanvas.toDataURL(selectedFormat, quality);
+    const link = document.createElement('a');
+    link.download = `resizer-export-${Date.now()}.${selectedFormat === 'image/jpeg' ? 'jpg' : 'png'}`;
+    link.href = dataUrl;
+    link.click();
+    showStatus("Image ready!", "text-success");
 };
 
 function applyQuantization(ctx, w, h, levels) {
     const imgData = ctx.getImageData(0, 0, w, h);
     const data = imgData.data;
-    const factor = 256 / Math.sqrt(levels || 256);
+    const factor = 256 / Math.sqrt(levels);
     for (let i = 0; i < data.length; i += 4) {
         data[i] = Math.round(data[i] / factor) * factor;
         data[i+1] = Math.round(data[i+1] / factor) * factor;

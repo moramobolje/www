@@ -5,25 +5,35 @@ title: Image Resizer
 
 <link rel="stylesheet" href="image_resizer.css">
 
-<body class="py-5">
-
-<div class="container">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-11">
+            <!-- Updated Header to perfectly match image_2.png -->
             <header class="text-center mb-5">
-                <h1 class="display-5 fw-bold">Image Studio</h1>
-                <div class="mb-2">
-                    <span class="privacy-badge">
-                        <i class="bi bi-shield-check"></i> 
-                        Local Privacy: Your data never leaves your device
+                <h1 class="display-5 fw-bold text-dark">Image Resizer</h1>
+                <div class="mb-4">
+                    <span class="privacy-badge-v2">
+                        <i class="bi bi-shield-lock-fill"></i> 
+                        100% Client-Side
                     </span>
                 </div>
+                <p class="text-muted mx-auto" style="max-width: 600px;">
+                    <strong>Your images never touch our servers.</strong> 
+                    Resizing happens entirely within your browser's memory using JavaScript. 
+                    Once you close this tab, all data is wiped from your device's temporary cache.
+                </p>
             </header>
 
-            <div id="uploadSection" class="card p-4 mb-4">
-                <div class="upload-zone p-5 text-center" id="dropZone">
-                    <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 3rem;"></i>
-                    <h4 class="mt-3">Click or Drag Image Here</h4>
+            <!-- Updated Upload Zone with refined spacing -->
+            <div id="uploadSection" class="card px-5 py-4 mb-4">
+                <div class="upload-zone-v2 p-5 text-center" id="dropZone">
+                    <div class="icon-circle mx-auto mb-4">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">Drop your image here</h4>
+                    <p class="text-muted mb-4 small">JPG, PNG, WEBP, AVIF, BMP, GIF</p>
+                    <!-- Button resized to match target screenshot -->
+                    <button class="btn btn-select-file px-4 py-2">Select File</button>
                     <input type="file" id="fileInput" class="d-none" accept="image/*">
                 </div>
             </div>
@@ -135,5 +145,3 @@ title: Image Resizer
 </div>
 
 <script src="image_resizer.js"></script>
-</body>
-</html>

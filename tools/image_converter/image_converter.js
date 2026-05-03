@@ -2,126 +2,89 @@ const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 const uploadSection = document.getElementById('uploadSection');
 const workspaceSection = document.getElementById('workspaceSection');
-const fileListContainer = document.getElementById('fileList');
 const targetFormat = document.getElementById('targetFormat');
 const lossyOptions = document.getElementById('lossyOptions');
 const indexedOptions = document.getElementById('indexedOptions');
 const qualityRange = document.getElementById('qualityRange');
 const qualityVal = document.getElementById('qualityVal');
-const convertAllBtn = document.getElementById('convertAllBtn');
-const downloadZipBtn = document.getElementById('downloadZipBtn');
-const fileCountBadge = document.getElementById('fileCount');
+const convertBtn = document.getElementById('convertBtn');
+const resetBtn = document.getElementById('resetBtn');
+const mainPreview = document.getElementById('mainPreview');
+const fileDetails = document.getElementById('fileDetails');
 
-let fileQueue = [];
+let currentFile = null;
 
-// Interaction Handlers
+// File Pickers
 dropZone.onclick = () => fileInput.click();
-fileInput.onchange = (e) => handleFiles(e.target.files);
-
-dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('bg-light'); };
-dropZone.ondragleave = () => dropZone.classList.remove('bg-light');
-dropZone.ondrop = (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('bg-light');
-    handleFiles(e.dataTransfer.files);
+fileInput.onchange = (e) => {
+    handleFile(e.target.files[0]);
 };
 
+// Drag and Drop
+dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('upload-zone-active'); };
+dropZone.ondragleave = () => dropZone.classList.remove('upload-zone-active');
+dropZone.ondrop = (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('upload-zone-active');
+    handleFile(e.dataTransfer.files[0]);
+};
+
+// Format Switching Logic
 targetFormat.onchange = () => {
-    const val = targetFormat.value;
-    // PNG uses quantization settings, others (JPG, WEBP, AVIF) use the quality slider
-    if (val === 'image/png') {
-        lossyOptions.classList.add('d-none');
-        indexedOptions.classList.remove('d-none');
-    } else {
-        lossyOptions.classList.remove('d-none');
-        indexedOptions.classList.add('d-none');
-    }
+    const isPng = targetFormat.value === 'image/png';
+    lossyOptions.classList.toggle('d-none', isPng);
+    indexedOptions.classList.toggle('d-none', !isPng);
 };
 
 qualityRange.oninput = () => qualityVal.innerText = `${qualityRange.value}%`;
 
-function handleFiles(files) {
-    if (!files.length) return;
+function handleFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
     
+    currentFile = file;
     uploadSection.classList.add('d-none');
     workspaceSection.classList.remove('d-none');
-
-    Array.from(files).forEach(file => {
-        if (!file.type.startsWith('image/')) return;
-        
-        const fileId = Math.random().toString(36).substr(2, 9);
-        const fileObj = {
-            id: fileId,
-            file: file,
-            status: 'pending',
-            resultBlob: null,
-            previewUrl: URL.createObjectURL(file)
-        };
-        
-        fileQueue.push(fileObj);
-        renderFileItem(fileObj);
-    });
-
-    fileCountBadge.innerText = `${fileQueue.length} Files`;
-}
-
-function renderFileItem(item) {
-    const div = document.createElement('div');
-    div.className = 'file-item';
-    div.id = `item-${item.id}`;
-    div.innerHTML = `
-        <img src="${item.previewUrl}" class="file-preview" alt="preview">
-        <div class="flex-grow-1">
-            <div class="fw-bold text-truncate" style="max-width: 250px;">${item.file.name}</div>
-            <div class="text-muted smaller" style="font-size: 0.75rem;">
-                ${(item.file.size / 1024).toFixed(1)} KB • <span class="status-text">Ready</span>
-            </div>
-        </div>
-        <div class="status-indicator">
-            <span class="status-dot status-pending"></span>
-        </div>
-    `;
-    fileListContainer.appendChild(div);
-}
-
-function updateItemStatus(id, status, text) {
-    const item = document.getElementById(`item-${id}`);
-    if (!item) return;
-    const dot = item.querySelector('.status-dot');
-    const statusTxt = item.querySelector('.status-text');
     
-    dot.className = `status-dot status-${status}`;
-    statusTxt.innerText = text;
-    if (status === 'complete') statusTxt.classList.add('text-success');
+    // Revoke previous blob if exists to save memory
+    if (mainPreview.src) URL.revokeObjectURL(mainPreview.src);
+    
+    mainPreview.src = URL.createObjectURL(file);
+    mainPreview.classList.remove('d-none');
+    fileDetails.innerHTML = `<span class="fw-bold">${file.name}</span> • ${(file.size / 1024).toFixed(1)} KB`;
 }
 
-convertAllBtn.onclick = async () => {
-    convertAllBtn.disabled = true;
-    downloadZipBtn.classList.add('d-none');
+// Full Reset Logic
+resetBtn.onclick = () => {
+    currentFile = null;
+    fileInput.value = ''; // CRITICAL: Reset the input so same file can be picked again
+    if (mainPreview.src) URL.revokeObjectURL(mainPreview.src);
+    mainPreview.src = '';
+    mainPreview.classList.add('d-none');
+    workspaceSection.classList.add('d-none');
+    uploadSection.classList.remove('d-none');
+};
+
+convertBtn.onclick = async () => {
+    if (!currentFile) return;
     
+    convertBtn.disabled = true;
+    const originalText = convertBtn.innerHTML;
+    convertBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+
     const quality = parseInt(qualityRange.value) / 100;
     const format = targetFormat.value;
     const colorLimit = parseInt(document.getElementById('pngColors').value);
 
-    for (const item of fileQueue) {
-        if (item.status === 'complete') continue;
-        
-        item.status = 'processing';
-        updateItemStatus(item.id, 'processing', 'Converting...');
-
-        try {
-            const blob = await processImage(item.file, format, quality, colorLimit);
-            item.resultBlob = blob;
-            item.status = 'complete';
-            updateItemStatus(item.id, 'complete', `Done (${(blob.size / 1024).toFixed(1)} KB)`);
-        } catch (err) {
-            console.error(err);
-            updateItemStatus(item.id, 'pending', 'Error: Format not supported');
-        }
+    try {
+        const blob = await processImage(currentFile, format, quality, colorLimit);
+        downloadFile(blob, format);
+    } catch (err) {
+        alert("Browser error: Selected format not supported for encoding.");
+        console.error(err);
+    } finally {
+        convertBtn.disabled = false;
+        convertBtn.innerHTML = originalText;
     }
-
-    convertAllBtn.disabled = false;
-    downloadZipBtn.classList.remove('d-none');
 };
 
 function processImage(file, format, quality, colorLimit) {
@@ -133,7 +96,6 @@ function processImage(file, format, quality, colorLimit) {
             canvas.height = img.height;
             const ctx = canvas.getContext('2d');
             
-            // Add white background for JPEGs
             if (format === 'image/jpeg') {
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -147,12 +109,11 @@ function processImage(file, format, quality, colorLimit) {
 
             canvas.toBlob((blob) => {
                 if (blob) resolve(blob);
-                else reject(new Error("Canvas toBlob failed"));
+                else reject(new Error("Encoding failed"));
             }, format, quality);
             
             URL.revokeObjectURL(img.src);
         };
-        img.onerror = () => reject(new Error("Image loading failed"));
         img.src = URL.createObjectURL(file);
     });
 }
@@ -172,20 +133,13 @@ function applyQuantization(ctx, w, h, levels) {
     ctx.putImageData(imgData, 0, 0);
 }
 
-downloadZipBtn.onclick = async () => {
-    const zip = new JSZip();
-    const extension = targetFormat.value.split('/')[1].replace('jpeg', 'jpg');
-
-    fileQueue.forEach(item => {
-        if (item.resultBlob) {
-            const name = item.file.name.substring(0, item.file.name.lastIndexOf('.')) || item.file.name;
-            zip.file(`${name}.${extension}`, item.resultBlob);
-        }
-    });
-
-    const content = await zip.generateAsync({type: "blob"});
+function downloadFile(blob, format) {
+    const ext = format.split('/')[1].replace('jpeg', 'jpg');
+    const name = currentFile.name.substring(0, currentFile.name.lastIndexOf('.')) || 'converted';
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(content);
-    link.download = `converted-images-${Date.now()}.zip`;
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = `${name}.${ext}`;
     link.click();
-};
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+}

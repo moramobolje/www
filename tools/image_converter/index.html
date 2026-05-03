@@ -5,41 +5,48 @@ title: Image Converter
 
 <link rel="stylesheet" href="image_converter.css">
 
-<body class="py-5">
-
-<div class="container">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
+            
+            <!-- Header Section -->
             <header class="text-center mb-5">
-                <h1 class="display-5 fw-bold">Image Converter</h1>
-                <div class="mb-2">
+                <h1 class="display-5 fw-bold text-dark">Image Converter</h1>
+                <div class="d-flex flex-column align-items-center gap-3">
                     <span class="privacy-badge">
-                        <i class="bi bi-shield-check"></i> 
-                        Local Privacy: Your data never leaves your device
-
+                        <i class="bi bi-shield-lock-fill"></i> 100% Client-Side
                     </span>
+                    <p class="text-muted mx-auto" style="max-width: 600px;">
+                        <strong>Your images never touch our servers.</strong> Conversion happens entirely within your browser's memory using JavaScript. Once you close this tab, all data is wiped from your device's temporary cache.
+                    </p>
                 </div>
             </header>
 
-            <div id="uploadSection" class="card p-4 mb-4">
+            <!-- 1. Upload Section -->
+            <div id="uploadSection" class="card border-0 shadow-sm p-4 mb-4">
                 <div class="upload-zone p-5 text-center" id="dropZone">
-                    <i class="bi bi-images text-primary" style="font-size: 3rem;"></i>
-                    <h4 class="mt-3">Drop images to convert</h4>
-                    <p class="text-muted small">Supports Batch Upload (JPG, PNG, WEBP, AVIF, BMP, GIF)</p>
-                    <input type="file" id="fileInput" class="d-none" accept="image/*" multiple>
-                    <button class="btn btn-outline-primary btn-sm mt-2">Select Files</button>
+                    <div class="icon-circle mb-3 mx-auto">
+                        <i class="bi bi-cloud-arrow-up text-primary"></i>
+                    </div>
+                    <h4 class="fw-bold">Drop your image here</h4>
+                    <p class="text-muted">JPG, PNG, WEBP, AVIF, BMP, GIF</p>
+                    <input type="file" id="fileInput" class="d-none" accept="image/*">
+                    <button class="btn btn-primary btn-lg px-5 shadow-sm mt-2 rounded-pill">
+                        Select File
+                    </button>
                 </div>
             </div>
 
+            <!-- 2. Workspace Section (Hidden by default) -->
             <div id="workspaceSection" class="row g-4 d-none">
                 <!-- Settings Column -->
-                <div class="col-md-4">
-                    <div class="card p-4 sticky-top" style="top: 2rem;">
-                        <h5 class="mb-4">Conversion Settings</h5>
+                <div class="col-md-5">
+                    <div class="card border-0 shadow-sm p-4 sticky-top" style="top: 2rem;">
+                        <h5 class="mb-4 fw-bold">Conversion Settings</h5>
                         
                         <div class="mb-4">
-                            <label class="form-label">Target Format</label>
-                            <select id="targetFormat" class="form-select">
+                            <label class="form-label text-uppercase small fw-bold text-muted">Output Format</label>
+                            <select id="targetFormat" class="form-select border-2">
                                 <option value="image/jpeg">JPEG (.jpg)</option>
                                 <option value="image/png">PNG (.png)</option>
                                 <option value="image/webp">WEBP (.webp)</option>
@@ -47,54 +54,48 @@ title: Image Converter
                             </select>
                         </div>
 
-                        <!-- Dynamic Options for Lossy (JPG, WEBP, AVIF) -->
+                        <!-- Quality Slider -->
                         <div id="lossyOptions">
-                            <label class="form-label d-flex justify-content-between">
-                                Quality <span id="qualityVal" class="fw-bold text-primary">85%</span>
+                            <label class="form-label d-flex justify-content-between text-uppercase small fw-bold text-muted">
+                                Quality <span id="qualityVal" class="text-primary">85%</span>
                             </label>
                             <input type="range" class="form-range" id="qualityRange" min="1" max="100" value="85">
-                            <p class="text-muted smallest" style="font-size: 0.75rem;">Higher quality results in larger file sizes.</p>
                         </div>
 
-                        <!-- Dynamic Options for Indexed PNG -->
+                        <!-- PNG Options -->
                         <div id="indexedOptions" class="d-none">
-                            <label class="form-label">Color Limit</label>
-                            <select id="pngColors" class="form-select">
-                                <option value="0">Original (True Color)</option>
+                            <label class="form-label text-uppercase small fw-bold text-muted">Colors</label>
+                            <select id="pngColors" class="form-select border-2">
+                                <option value="0">True Color (Lossless)</option>
                                 <option value="256">256 Colors (Optimized)</option>
                                 <option value="128">128 Colors</option>
                                 <option value="64">64 Colors</option>
-                                <option value="32">32 Colors</option>
                             </select>
-                            <div class="form-check mt-3">
+                            <div class="form-check form-switch mt-3">
                                 <input class="form-check-input" type="checkbox" id="keepAlpha" checked>
-                                <label class="form-check-label" for="keepAlpha">Keep Transparency</label>
+                                <label class="form-check-label" for="keepAlpha">Transparency</label>
                             </div>
                         </div>
 
                         <hr class="my-4">
 
-                        <button id="convertAllBtn" class="btn btn-primary w-100 py-3 mb-2">
-                            <i class="bi bi-gear-wide-connected me-2"></i>Convert All
+                        <button id="convertBtn" class="btn btn-primary btn-lg w-100 shadow-sm mb-3 rounded-3">
+                            Convert & Save
                         </button>
                         
-                        <button id="downloadZipBtn" class="btn btn-outline-success w-100 d-none">
-                            <i class="bi bi-file-earmark-zip me-2"></i>Download ZIP
-                        </button>
-
-                        <button class="btn btn-link btn-sm w-100 text-muted mt-3" onclick="location.reload()">
-                            Clear All
+                        <button class="btn btn-link btn-sm w-100 text-decoration-none text-muted" id="resetBtn">
+                            <i class="bi bi-x-circle me-1"></i> Cancel and Start Over
                         </button>
                     </div>
                 </div>
 
-                <!-- File List Column -->
-                <div class="col-md-8">
-                    <h5 class="mb-3 d-flex justify-content-between">
-                        Queue <span class="badge bg-secondary" id="fileCount">0 Files</span>
-                    </h5>
-                    <div id="fileList">
-                        <!-- File items will be injected here -->
+                <!-- Preview Column -->
+                <div class="col-md-7">
+                    <div class="card border-0 shadow-sm p-3 text-center bg-white h-100">
+                        <div class="d-flex align-items-center justify-content-center flex-grow-1 border rounded-3 bg-light overflow-hidden" style="min-height: 300px;">
+                            <img id="mainPreview" src="" class="img-fluid d-none" alt="Preview">
+                        </div>
+                        <div id="fileDetails" class="mt-3 small text-muted"></div>
                     </div>
                 </div>
             </div>
@@ -103,6 +104,3 @@ title: Image Converter
 </div>
 
 <script src="image_converter.js"></script>
-
-</body>
-</html>
