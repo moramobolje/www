@@ -37,6 +37,19 @@ async function fetchTimetable() {
     }
 }
 
+function parseOAGDate(dateStr) {
+    const months = {
+        "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "Jun": 5,
+        "Jul": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
+    };
+    const parts = dateStr.split('-'); // ["15", "Apr", "26"]
+    const day = parseInt(parts[0], 10);
+    const month = months[parts[1]];
+    const year = 2000 + parseInt(parts[2], 10); // Converts "26" to 2026
+    
+    return new Date(year, month, day);
+}
+
 function toggleMode() {
     currentMode = (currentMode === 'ID') ? 'IA' : 'ID';
     updateUI();
@@ -54,11 +67,23 @@ function render() {
     const container = document.getElementById('timetable-container');
     container.innerHTML = '';
     
-    // Filtriramo letove tako da obuhvatimo i International i Domestic
+    // 1. Get today's date and reset time to midnight for a fair comparison
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // 2. Filter flights by Mode (ID/IA) AND check if the flight is still active
     const modeFlights = window.allFlights.filter(f => {
-        if (currentMode === 'ID') return f.tip === 'ID' || f.tip === 'DD';
-        if (currentMode === 'IA') return f.tip === 'IA' || f.tip === 'DA';
-        return false;
+        // First, check the mode (ID/IA)
+        let matchesMode = false;
+        if (currentMode === 'ID') matchesMode = (f.tip === 'ID' || f.tip === 'DD');
+        if (currentMode === 'IA') matchesMode = (f.tip === 'IA' || f.tip === 'DA');
+        
+        if (!matchesMode) return false;
+
+        // Second, check the "TO" date (f.do)
+        // If the end date is earlier than today, we exclude it
+        const flightEndDate = parseOAGDate(f.do);
+        return flightEndDate >= today; 
     });
 
     const groups = {};
@@ -72,33 +97,41 @@ function render() {
         const div = document.createElement('div');
         div.className = 'dest-row';
         
-        const rows = groups[dest].sort((a,b) => a.vreme.localeCompare(b.vreme)).map(f => `
-            <tr>
-                <td class="col-days" data-label="Days">${formatDays(f.dan)}</td>
-                <td class="col-time" data-label="Time">${f.vreme}</td>
-                <td class="col-flight" data-label="Flight">${f.br}</td>
-                <td class="col-val" data-label="From">${f.od}</td>
-                <td class="col-val" data-label="To">${f.do}</td>
-                <td class="col-note" data-label="Remarks">${f.note}</td>
-            </tr>
-        `).join('');
+        const rows = groups[dest].sort((a,b) => a.vreme.localeCompare(b.vreme)).map(f => {
+    // Only show the remarks cell if there is actually a note
+    const remarkCell = f.note ? `<td class="col-note" data-label="Remarks">${f.note}</td>` : '';
+    
+    return `
+        <tr>
+            <td class="col-days" data-label="Days">${formatDays(f.dan)}</td>
+            <td class="col-time" data-label="Time">${f.vreme}</td>
+            <td class="col-flight" data-label="Flight">${f.br}</td>
+            <td class="col-val" data-label="From">${f.od}</td>
+            <td class="col-val" data-label="To">${f.do}</td>
+            ${remarkCell}
+        </tr>
+    `;
+}).join('');
 
-        div.innerHTML = `
-            <div class="dest-name">${dest}</div>
-            <table class="flights-table">
-                <thead>
-                    <tr>
-                        <th class="col-days">DAYS</th>
-                        <th class="col-time">TIME</th>
-                        <th class="col-flight">FLIGHT</th>
-                        <th class="col-val">FROM</th>
-                        <th class="col-val">TO</th>
-                        <th class="col-note">REMARKS</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>`;
-        container.appendChild(div);
+        // Only append the destination block if there are flights left after filtering
+        if (rows.length > 0) {
+            div.innerHTML = `
+                <div class="dest-name">${dest}</div>
+                <table class="flights-table">
+                    <thead>
+                        <tr>
+                            <th class="col-days">DAYS</th>
+                            <th class="col-time">TIME</th>
+                            <th class="col-flight">FLIGHT</th>
+                            <th class="col-val">FROM</th>
+                            <th class="col-val">TO</th>
+                            <th class="col-note">REMARKS</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>`;
+            container.appendChild(div);
+        }
     });
 }
 

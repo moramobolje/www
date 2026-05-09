@@ -202,3 +202,28 @@ body {
         .col-val:nth-child(5) { display: none !important; } /* Sakriva "DO" kolonu ako nema mesta */
     }
 }
+
+@media (max-width: 768px) {
+    /* Force the table row to allow wrapping */
+    .flights-table tr {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    /* Make standard columns share the top line */
+    .flights-table td {
+        border: none;
+        padding: 2px 5px;
+    }
+
+    /* Target the Remarks column specifically */
+    .col-note {
+        flex: 0 0 100%; /* Force to 100% width */
+        color: #fd7e14; /* Orange color to match your status theme */
+        font-size: 0.85rem;
+        padding-top: 5px !important;
+        background-color: #fffaf5; /* Subtle highlight */
+    }
+}
