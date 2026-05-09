@@ -1,0 +1,15 @@
+main:
+  - name: "Misc"
+    sublinks:
+      - name: "BEG Live"
+        url: "/misc/beg_live/"
+      - name: "BEG Seasonal"
+        url: "/beg_seasonal/"
+  - name: "Tools"
+    sublinks:
+      - name: "Image Resizer"
+        url: "/tools/image_resizer/"
+      - name: "Image Converter"
+        url: "/tools/image_converter/"
+  - name: "Contact"
+    url: "/contact/"

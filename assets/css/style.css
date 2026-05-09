@@ -35,3 +35,23 @@ body {
     background-color: #0d6efd;
     border-color: #0d6efd;
 }
+
+/* Ujednačavanje fonta i paddinga za podmeni */
+.navbar-nav .dropdown-menu .dropdown-item {
+    font-size: 0.95rem; /* Prilagodi ovu vrednost da se tačno poklapa sa .nav-link */
+    color: #4b5563;    /* Boja teksta, da bude ista kao na slici */
+    padding: 0.5rem 1rem; /* Bootstrap default je često drugačiji, ujednači ga */
+}
+
+/* Stil za prelazak mišem preko stavke */
+.navbar-nav .dropdown-menu .dropdown-item:hover {
+    background-color: #f3f4f6; /* Svetlo siva pozadina na hover, diskretno */
+    color: #111827;           /* Tamnija boja teksta na hover */
+}
+
+/* Stil za aktivnu stavku u podmeniju */
+.navbar-nav .dropdown-menu .dropdown-item.active {
+    background-color: transparent; /* Da ne bude Bootstrap plava pozadina */
+    color: #2563eb;               /* Plava boja teksta za aktivnu stavku, kao 'Homepage' */
+    font-weight: 600;              /* Malo deblji font za aktivnu stavku */
+}
