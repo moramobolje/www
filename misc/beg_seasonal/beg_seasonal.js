@@ -28,7 +28,7 @@ async function fetchTimetable() {
             do: l.getElementsByTagName('DO')[0]?.textContent,
             dan: l.getElementsByTagName('FREKVENCIJA')[0]?.textContent,
             note: l.getElementsByTagName('PREKID_OD')[0]?.textContent ? 
-                  `(excl. ${l.getElementsByTagName('PREKID_OD')[0].textContent}-${l.getElementsByTagName('PREKID_DO')[0].textContent})` : ''
+                  `(excl. fm ${l.getElementsByTagName('PREKID_OD')[0].textContent} till ${l.getElementsByTagName('PREKID_DO')[0].textContent})` : ''
         }));
         
         updateUI();
@@ -107,7 +107,7 @@ function render() {
             <td class="col-time" data-label="Time">${f.vreme}</td>
             <td class="col-flight" data-label="Flight">${f.br}</td>
             <td class="col-val" data-label="From">${f.od}</td>
-            <td class="col-val" data-label="To">${f.do}</td>
+            <td class="col-val" data-label="Till">${f.do}</td>
             ${remarkCell}
         </tr>
     `;
@@ -124,7 +124,7 @@ function render() {
                             <th class="col-time">TIME</th>
                             <th class="col-flight">FLIGHT</th>
                             <th class="col-val">FROM</th>
-                            <th class="col-val">TO</th>
+                            <th class="col-val">TILL</th>
                             <th class="col-note">REMARKS</th>
                         </tr>
                     </thead>
