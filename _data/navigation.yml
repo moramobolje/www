@@ -4,7 +4,7 @@ main:
       - name: "BEG Live"
         url: "/misc/beg_live/"
       - name: "BEG Seasonal"
-        url: "/beg_seasonal/"
+        url: "/misc/beg_seasonal/"
   - name: "Tools"
     sublinks:
       - name: "Image Resizer"
