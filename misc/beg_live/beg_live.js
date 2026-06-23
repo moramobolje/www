@@ -174,8 +174,8 @@ function renderTable() {
             indicator = `<span class="status-dot dot-static-blue"></span>`;
         }
 
-        let busIcon = /[A-Z]$/i.test(String(f.gate).trim()) ? `<i class="bi bi-bus-front ms-2 text-muted bus-icon-style" title="Remote position" style="font-size: 0.8rem;"></i>` : "";
-        
+        let busIcon = /([A-Z]$|^A(1[1-9]|20))/i.test(String(f.gate).trim()) ? `<i class="bi bi-bus-front ms-2 text-muted bus-icon-style" title="Remote position" style="font-size: 0.8rem;"></i>` : "";
+
         let offsetText = "";
         const diff = getDiffInMinutes(f.st, f.at);
         if (diff !== null && (f.remarkCode === 'DEP' || f.remarkCode === 'LAN' || f.remarkCode === 'ARR' || f.remarkCode === 'DLY')) {

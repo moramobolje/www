@@ -137,7 +137,14 @@ function render() {
 
 function formatDays(d) {
     let s = "";
-    for(let i=1; i<=7; i++) s += d.includes(i) ? i : ".";
+    for(let i=1; i<=7; i++) {
+        if (d.includes(i)) {
+            s += i; 
+        } else {
+            // remove bold
+            s += '<span style="font-weight: normal; opacity: 0.7;">-</span>'; 
+        }
+    }
     return s;
 }
 
