@@ -2,6 +2,8 @@
 let schedule = {};
 let currentDay = "";
 let currentType = "DEPARTURES";
+let showAllDays = false;
+let searchQuery = "";
 
 function setActiveButton(type) {
     // 1. Find all buttons inside the toggle container
@@ -49,7 +51,33 @@ const remarkMap = {
   "HLD": "Holding", "LAN": "Landed", "ARR": "Arrived", "GTG - GO TO GATE": "Go to gate"
 };
 
-window.onload = function() { refreshData(); };
+window.onload = function () {
+
+    refreshData();
+
+    document
+        .getElementById("flight-search")
+        .addEventListener("input", function () {
+
+            searchQuery = this.value.toLowerCase().trim();
+
+            renderTable();
+
+        });
+
+    document
+        .getElementById("toggle-all-days")
+        .addEventListener("click", function () {
+
+            showAllDays = !showAllDays;
+
+            this.classList.toggle("active", showAllDays);
+
+            renderTable();
+
+        });
+
+};
 
 function setTimestamp() {
   const now = new Date();
@@ -109,6 +137,7 @@ async function refreshData() {
     if (icon) icon.classList.remove('bi-spin');
     setTimestamp(); 
     initUI();
+    updateDelaySummary();
   } catch (e) {
     document.getElementById('loading-zone').innerHTML = `<div class="alert alert-warning">Data unavailable.</div>`;
   }
@@ -119,14 +148,65 @@ function initUI() {
   document.getElementById('type-tabs').setAttribute('style', 'display: flex !important');
   document.getElementById('selected-date-label').innerText = currentDay;
 
-  const dropdown = document.getElementById('day-dropdown');
-  dropdown.innerHTML = "";
-  Object.keys(schedule).sort().forEach((date) => {
-    const li = document.createElement('li');
-    li.innerHTML = `<a class="dropdown-item ${date === currentDay ? 'active' : ''}" href="#">${date}</a>`;
-    li.onclick = (e) => { e.preventDefault(); currentDay = date; document.getElementById('selected-date-label').innerText = date; renderTable(); };
-    dropdown.appendChild(li);
-  });
+const dropdown = document.getElementById('day-dropdown');
+dropdown.innerHTML = "";
+
+Object.keys(schedule).sort().forEach((date) => {
+
+  const li = document.createElement('li');
+
+  li.innerHTML = `
+    <a class="dropdown-item ${date === currentDay && !showAllDays ? 'active' : ''}" href="#">
+      ${date}
+    </a>
+  `;
+
+li.onclick = (e) => {
+    e.preventDefault();
+
+    showAllDays = false;
+    currentDay = date;
+
+    document.getElementById('selected-date-label').innerText = date;
+
+    renderTable();
+    updateDelaySummary();
+};
+
+  dropdown.appendChild(li);
+
+});
+
+
+// All available days option
+const divider = document.createElement('li');
+divider.innerHTML = `<hr class="dropdown-divider">`;
+dropdown.appendChild(divider);
+
+
+const allDays = document.createElement('li');
+
+allDays.innerHTML = `
+  <a class="dropdown-item ${showAllDays ? 'active' : ''}" href="#">
+    <i class="bi bi-calendar-range me-2"></i>
+    All available days
+  </a>
+`;
+
+allDays.onclick = (e) => {
+
+  e.preventDefault();
+
+  showAllDays = true;
+
+  document.getElementById('selected-date-label').innerText = "All days";
+
+  renderTable();
+  updateDelaySummary();
+
+};
+
+dropdown.appendChild(allDays);
   renderTable();
 }
 
@@ -138,18 +218,184 @@ function switchType(type, el) {
   renderTable();
 }
 
+// your previous function ends here
+
+function updateDelaySummary() {
+
+    const el = document.getElementById("delay-summary");
+    if (!el || !schedule[currentDay]) return;
+
+    const dates = Object.keys(schedule).sort();
+
+    const firstDate = dates[0];
+    const lastDate = dates[dates.length - 1];
+
+    // First and last dates have incomplete flight data
+    if (currentDay === firstDate) {
+
+        el.innerHTML = `
+            <div class="delay-title">TODAY'S AVERAGE FLIGHT DELAY</div>
+            <div class="delay-values">N/A</div>
+        `;
+
+        return;
+    }
+
+    if (currentDay === lastDate && currentDay !== firstDate) {
+
+        el.innerHTML = `
+            <div class="delay-title">TODAY'S AVERAGE FLIGHT DELAY</div>
+            <div class="delay-values">DEP: --, ARR: --</div>
+        `;
+
+        return;
+    }
+
+    let depDelays = [];
+    let arrDelays = [];
+
+    schedule[currentDay].DEPARTURES.forEach(f => {
+
+        const diff = getDiffInMinutes(f.st, f.at);
+
+        if (
+            diff !== null &&
+            diff > 0 &&
+            (f.remarkCode === "DEP" || f.remarkCode === "DLY")
+        ) {
+            depDelays.push(diff);
+        }
+
+    });
+
+
+    schedule[currentDay].ARRIVALS.forEach(f => {
+
+        const diff = getDiffInMinutes(f.st, f.at);
+
+        if (
+            diff !== null &&
+            diff > 0 &&
+            (f.remarkCode === "ARR" || f.remarkCode === "LAN" || f.remarkCode === "DLY")
+        ) {
+            arrDelays.push(diff);
+        }
+
+    });
+
+
+    function average(arr) {
+        if (!arr.length) return 0;
+        return Math.round(arr.reduce((a,b) => a + b, 0) / arr.length);
+    }
+
+
+    const depAvg = average(depDelays);
+    const arrAvg = average(arrDelays);
+
+function delayClass(value) {
+    if (value > 30) return "delay-high";
+    if (value > 15) return "delay-mid";
+    return "delay-low";
+}
+
+el.innerHTML = `
+    <div class="delay-title">Today's average flight delay</div>
+    <div class="delay-values">
+        DEP: <span class="${delayClass(depAvg)}">${depAvg} mins</span>,
+        ARR: <span class="${delayClass(arrAvg)}">${arrAvg} mins</span>
+    </div>
+`;
+}
+
+
 function renderTable() {
   const container = document.getElementById('flight-table-container');
   if (!container || !schedule[currentDay]) return;
 
-  const flights = schedule[currentDay][currentType].sort((a, b) => a.st.localeCompare(b.st));
+let flights = [];
+
+if (showAllDays) {
+
+    Object.keys(schedule).forEach(day => {
+
+        schedule[day][currentType].forEach(flight => {
+
+            flights.push({
+                ...flight,
+                date: day
+            });
+
+        });
+
+    });
+
+} else {
+
+    flights = schedule[currentDay][currentType].map(flight => ({
+        ...flight,
+        date: currentDay
+    }));
+
+}
+
+flights.sort((a, b) => {
+
+    if (a.date !== b.date) {
+        return a.date.localeCompare(b.date);
+    }
+
+    return a.st.localeCompare(b.st);
+
+});
+
+if (searchQuery) {
+
+    flights = flights.filter(flight => {
+
+        const airline =
+            iataKey[flight.fn.substring(0, 3).toUpperCase()] ||
+            iataKey[flight.fn.substring(0, 2).toUpperCase()] ||
+            "";
+
+        const aircraft =
+            iataPlane[String(flight.ac).trim().toUpperCase()] ||
+            flight.ac;
+
+        return (
+            flight.dest +
+            " " +
+            flight.fn +
+            " " +
+            airline +
+            " " +
+            aircraft +
+            " " +
+            flight.gate
+        )
+        .toLowerCase()
+        .includes(searchQuery);
+
+    });
+
+}
+
   const currentTime = new Date().getHours().toString().padStart(2, '0') + ":" + new Date().getMinutes().toString().padStart(2, '0');
 
   // Widths: Times 8%, Flight 9%, Aircraft 18%, Status 19%, Destination 20%
-  let html = `<table class="table table-hover align-middle m-0"><thead><tr>
-    <th width="8%">SCHEDULED</th><th width="8%">ESTIMATED</th><th width="8%">ACTUAL</th>
-    <th width="22%">${currentType === 'ARRIVALS' ? 'ORIGIN' : 'DESTINATION'}</th>
-    <th width="9%">FLIGHT</th><th width="16%">AIRCRAFT</th><th width="10%">GATE</th><th width="19%">STATUS</th>
+  let html = `<table class="table table-hover align-middle m-0 ${showAllDays ? 'all-days' : ''}"><thead><tr>
+
+  ${showAllDays ? '<th width="7%">DATE</th>' : ''}
+
+  <th width="7%">SCHEDULED</th>
+  <th width="7%">ESTIMATED</th>
+  <th width="7%">ACTUAL</th>
+  <th width="22%">${currentType === 'ARRIVALS' ? 'ORIGIN' : 'DESTINATION'}</th>
+  <th width="9%">FLIGHT</th>
+  <th width="16%">AIRCRAFT</th>
+  <th width="10%">GATE</th>
+  <th width="22%">STATUS</th>
+
   </tr></thead><tbody>`;
 
   let closestRowId = null;
@@ -192,8 +438,9 @@ function renderTable() {
         if (rowClass === "current-row") closestRowId = `row-${index}`;
 
         // --- UPDATED ROW GENERATION ---
-        html += `<tr id="row-${index}" class="${rowClass} mobile-row" onclick="this.classList.toggle('is-expanded')">
-            <td data-label="Scheduled">${f.st}</td>
+        html += `<tr id="row-${index}" class="${rowClass} mobile-row">
+    ${showAllDays ? `<td data-label="Date">${f.date.substring(0, 6)}</td>` : ''}
+    <td data-label="Scheduled">${f.st}</td>
             <td data-label="Estimated" class="text-muted small">${f.et}</td>
             <td data-label="Actual" class="fw-bold text-success">${f.at !== "--:--" ? f.at : ""}</td>
             <td data-label="${currentType === 'ARRIVALS' ? 'Origin' : 'Destination'}" class="${destClass}">${indicator}${f.dest}</td>

@@ -24,9 +24,13 @@ title: BEG Live Flights
     </div>
 
     <div class="header-controls d-flex flex-wrap align-items-center gap-2">
-      <button class="btn btn-refresh-green shadow-sm" onclick="refreshData()" title="Click to update flight data">
-        <i class="bi bi-arrow-clockwise" id="refresh-icon"></i>
-      </button>
+<div id="delay-summary" class="delay-summary">
+  Today's delay: DEP: -- min, ARR: -- min
+</div>
+
+<button class="btn btn-refresh-green shadow-sm" onclick="refreshData()" title="Click to update flight data">
+  <i class="bi bi-arrow-clockwise" id="refresh-icon"></i>
+</button>
 
       <div class="dropdown">
         <button class="btn btn-control dropdown-toggle shadow-sm" type="button" id="dateMenu" data-bs-toggle="dropdown">
@@ -48,9 +52,30 @@ title: BEG Live Flights
     <span>Flight data does not update automatically. Please use the <strong>green refresh button</strong> to see the latest status. This is unofficial (hobby) page. Data source: Belgrade Airport. Please visit <a href="https://beg.aero" target="_blank">https://beg.aero</a> for official flight data.</span>
 </div>
   
-  <div id="loading-zone" class="py-5 text-center">
+<div id="loading-zone" class="py-5 text-center">
     <div class="spinner-border text-primary" role="status"></div>
-  </div>
+</div>
+
+
+<div class="flight-tools my-3">
+
+    <div class="input-group shadow-sm">
+
+        <span class="input-group-text">
+            <i class="bi bi-search"></i>
+        </span>
+
+        <input
+            id="flight-search"
+            type="search"
+            class="form-control"
+            placeholder="Search city, flight, airline, aircraft or gate..."
+            aria-label="Search flights"
+            autocomplete="off">
+
+    </div>
+
+</div>
   
   <div class="table-container">
     <main id="flight-table-container"></main>

@@ -161,6 +161,9 @@ body {
     font-size: 0.65rem;
     padding: 8px 10px; /* Reduced from 10px to 6px */
     text-transform: uppercase;
+        white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .table td { 
@@ -178,15 +181,6 @@ body {
     text-overflow: ellipsis; /* Adds the "..." */
 }
 
-/* Optional: Show full name on hover for desktop users */
-.table td:nth-child(4):hover {
-    overflow: visible;
-    white-space: normal;
-    background: #fff;
-    position: relative;
-    z-index: 5;
-    cursor: help;
-}
 
 /* Updated Font Size for Aircraft Column */
 .ac-cell {
@@ -201,15 +195,6 @@ body {
     text-overflow: ellipsis;
 }
 
-/* Optional: Show full name on hover */
-.ac-cell:hover {
-    overflow: visible;
-    white-space: normal;
-    background: #fff;
-    position: relative;
-    z-index: 5;
-    cursor: help;
-}
 
 .fn-cell { 
     background-color: #fcfcfc; 
@@ -417,4 +402,127 @@ body {
 /* Hide the inline AC code on desktop */
 @media (min-width: 769px) {
     .mobile-ac-inline { display: none; }
+}
+
+/* --- SEARCH BAR STYLING --- */
+
+.flight-tools .input-group {
+    max-width: 100%;
+    border: 1px solid #198754;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.flight-tools .input-group-text {
+    background: #198754;
+    color: #fff;
+    border: none;
+    padding-left: 14px;
+    padding-right: 14px;
+}
+
+#flight-search {
+    font-size: .9rem;
+    border: none;
+    box-shadow: none;
+}
+
+#flight-search:focus {
+    border: none;
+    box-shadow: none;
+}
+
+#flight-search::placeholder {
+    color: #6c757d;
+}
+
+#toggle-all-days.active {
+    background: #198754;
+    color: white;
+    border-color: #198754;
+}
+
+@media (max-width:768px){
+
+    .flight-tools .input-group{
+        width:100%;
+    }
+
+    #flight-search{
+        width:100%;
+    }
+
+    /* When all days is active, hide date column */
+    #flight-table-container table.all-days td:nth-child(1) {
+        display:none !important;
+    }
+
+    .mobile-row td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mobile-row td {
+    max-width: 0;
+}
+
+.mobile-row .fn-cell,
+.mobile-row .ac-cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+}
+.delay-summary {
+    white-space: nowrap;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.delay-title {
+    font-size: 0.65rem;
+    color: #6c757d;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-bottom: 3px;
+}
+
+.delay-values {
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.delay-low {
+    color: #198754;
+}
+
+.delay-mid {
+    color: #fd7e14;
+}
+
+.delay-high {
+    color: #dc3545;
+}
+
+
+/* Mobile adjustment */
+@media (max-width:768px) {
+
+    .delay-summary {
+        width: 100%;
+        text-align: center;
+        margin-top: 6px;
+    }
+
+    .delay-title {
+        font-size: 0.65rem;
+    }
+
+    .delay-values {
+        font-size: 0.75rem;
+    }
+
 }
