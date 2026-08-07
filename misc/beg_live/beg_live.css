@@ -426,6 +426,14 @@ body {
     font-weight: 600;
 }
 
+/* Show and style inline aircraft code ONLY on mobile */
+#flight-table-container td[data-label="Flight"] .aircraft-code {
+    display: inline !important;
+    color: #6c757d !important;
+    font-weight: 400 !important;
+    font-size: 0.85rem;
+}
+
 #flight-table-container td[data-label="Status"] { 
     grid-column: 3; 
     grid-row: 1; 
@@ -594,3 +602,6 @@ body {
 
 }
 
+.aircraft-code {
+    display: none;
+}
