@@ -8,20 +8,21 @@ title: BEG Live Flights
 <div class="container-fluid px-2 px-md-5">
   <header class="flight-header mt-4">
   <div class="header-top-row d-flex flex-column flex-md-row align-items-md-center justify-content-between">
-    <div class="d-flex align-items-center mb-3 mb-md-0">
-      <div class="logo-icon-wrapper me-3">
-        <i class="bi bi-airplane-fill fs-3 text-white"></i>
-      </div>
-      <div>
-        <h1 class="h4 fw-bold m-0 text-uppercase tracking-tight">Belgrade <span class="text-secondary fw-normal">Airport</span></h1>
-        <div class="live-status-bar small fw-bold text-uppercase">
-          <span class="refresh-label me-2">Data from:</span>
-          <span id="live-date"></span> 
-          <span class="mx-2 symbol-align">@</span> 
-          <span id="live-clock"></span>
-        </div>
-      </div>
+
+<a href="." class="d-flex align-items-center mb-3 mb-md-0 text-decoration-none color-inherit">
+  <div class="logo-icon-wrapper me-3">
+    <i class="bi bi-airplane-fill fs-3 text-white"></i>
+  </div>
+  <div>
+    <h1 class="h4 fw-bold m-0 text-uppercase tracking-tight text-dark">Belgrade <span class="text-secondary fw-normal">Airport</span></h1>
+    <div class="live-status-bar small fw-bold text-uppercase">
+      <span class="refresh-label me-2">Data from:</span>
+      <span id="live-date"></span> 
+      <span class="mx-2 symbol-align">@</span> 
+      <span id="live-clock"></span>
     </div>
+  </div>
+</a>
 
     <div class="header-controls d-flex flex-wrap align-items-center gap-2">
 <div id="delay-summary" class="delay-summary">
@@ -66,12 +67,12 @@ title: BEG Live Flights
         </span>
 
         <input
-            id="flight-search"
-            type="search"
-            class="form-control"
-            placeholder="Search city, flight, airline, aircraft or gate..."
-            aria-label="Search flights"
-            autocomplete="off">
+    id="flight-search"
+    type="search"
+    class="form-control"
+    placeholder="Search..."
+    aria-label="Search flights"
+    autocomplete="off">
 
     </div>
 

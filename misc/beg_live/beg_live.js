@@ -436,6 +436,7 @@ if (searchQuery) {
 
         let rowClass = (closestRowId === null && f.st >= currentTime) ? "current-row" : "";
         if (rowClass === "current-row") closestRowId = `row-${index}`;
+        const aircraftHtml = (f.ac && f.ac !== "-") ? ` <span class="aircraft-code">· ${f.ac}</span>` : '';
 
         // --- UPDATED ROW GENERATION ---
         html += `<tr id="row-${index}" class="${rowClass} mobile-row">
@@ -445,10 +446,7 @@ if (searchQuery) {
             <td data-label="Actual" class="fw-bold text-success">${f.at !== "--:--" ? f.at : ""}</td>
             <td data-label="${currentType === 'ARRIVALS' ? 'Origin' : 'Destination'}" class="${destClass}">${indicator}${f.dest}</td>
             
-            <td data-label="Flight" class="fn-cell ${destClass}" title="${companyName}">
-                ${f.fn} 
-                <span class="mobile-ac-inline">${cleanAc}</span>
-            </td>
+            <td data-label="Flight" class="fn-cell ${destClass}" title="${companyName}">${f.fn}${aircraftHtml}</td>
             
             <td data-label="Aircraft" class="ac-cell">${aircraftDisplay}</td>
             <td data-label="Gate"><div class="d-flex align-items-center"><span class="gate-box">${f.gate || '-'}</span>${busIcon}</div></td>
