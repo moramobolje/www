@@ -430,7 +430,7 @@ body {
     display: inline !important;
     color: #6c757d !important;
     font-weight: 400 !important;
-    font-size: 0.85rem;
+    font-size: 1rem;
 }
 
 #flight-table-container td[data-label="Status"] { 
