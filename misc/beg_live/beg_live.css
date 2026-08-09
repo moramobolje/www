@@ -654,6 +654,10 @@ body {
         color: #6c757d;
     }
 
+    #flight-table-container td[data-label="Estimated"]:empty {
+        display: none !important;
+    }
+
         /* Prepend "DEP " before the estimated time value on mobile */
     #flight-table-container td[data-label="Actual"]::before {
         content: "✓ " !important;
@@ -661,6 +665,10 @@ body {
         font-weight: 600;
         font-size: 0.7rem;
         color: #198754;
+    }
+
+    #flight-table-container td[data-label="Actual"]:empty {
+        display: none !important;
     }
 
 }

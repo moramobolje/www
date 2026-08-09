@@ -442,7 +442,7 @@ if (searchQuery) {
         html += `<tr id="row-${index}" class="${rowClass} mobile-row">
     ${showAllDays ? `<td data-label="Date">${f.date.substring(0, 6)}</td>` : ''}
     <td data-label="Scheduled">${f.st}</td>
-            <td data-label="Estimated" class="text-muted small">${f.et}</td>
+            <td data-label="Estimated" class="text-muted small">${f.et !== "--:--" ? f.et : ""}</td>
             <td data-label="Actual" class="fw-bold text-success">${f.at !== "--:--" ? f.at : ""}</td>
             <td data-label="${currentType === 'ARRIVALS' ? 'Origin' : 'Destination'}" class="${destClass}">${indicator}${f.dest}</td>
             
