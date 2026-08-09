@@ -338,15 +338,22 @@ body {
     /* The Row Grid */
     #flight-table-container tr.mobile-row {
         display: grid;
-        grid-template-columns: 75px 1fr 100px; 
-        grid-template-rows: auto auto;
-        gap: 2px 12px;
-        padding: 12px 10px;
+        grid-template-columns: 80px 1fr 110px; 
+        grid-template-rows: auto auto auto;
+        gap: 2px 10px;
+        padding: 10px;
         border-bottom: 1px solid #eee;
         background: #fff;
     }
 
-    #flight-table-container td { padding: 0 !important; border: none !important; }
+    #flight-table-container td { 
+        padding: 0 !important; 
+        border: none !important; 
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; 
+    }
 
     /* --- NEW MOBILE RULES --- */
 
@@ -380,32 +387,13 @@ body {
     text-overflow: ellipsis;
 }
 
-/* 3. Mobile Card Grid Layout using explicit data-labels */
-#flight-table-container tr.mobile-row {
-    display: grid;
-    grid-template-columns: 75px 1fr 110px; 
-    grid-template-rows: auto auto;
-    gap: 2px 10px;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    background: #fff;
-}
-
-#flight-table-container td { 
-    padding: 0 !important; 
-    border: none !important; 
-    max-width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 /* Position card items explicitly by data-label */
 #flight-table-container td[data-label="Scheduled"] { 
     grid-column: 1; 
-    grid-row: 1 / span 2; 
+    grid-row: 1; 
     font-size: 1.15rem; 
     font-weight: 700; 
+    line-height: 1.1;
     align-self: center;
 }
 
@@ -414,14 +402,14 @@ body {
     grid-column: 2; 
     grid-row: 1; 
     font-weight: 600; 
-    font-size: 1rem;
+    font-size: 1.15rem;
     line-height: 1.2;
 }
 
 #flight-table-container td[data-label="Flight"] { 
     grid-column: 2; 
     grid-row: 2; 
-    font-size: 0.9rem; 
+    font-size: 1rem; 
     color: #198754; 
     font-weight: 600;
 }
@@ -435,24 +423,59 @@ body {
 }
 
 #flight-table-container td[data-label="Status"] { 
-    grid-column: 3; 
-    grid-row: 1; 
-    text-align: right; 
-    font-weight: 700; 
-    font-size: 0.8rem;
-}
+        grid-column: 3; 
+        grid-row: 1 / span 2; 
+        text-align: right; 
+        font-weight: 700; 
+        font-size: 0.8rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: flex-start;
+        white-space: normal; /* Allows "15 mins late" to drop neatly onto its own line below status */
+    }
+
+#flight-table-container td[data-label="Status"] .offset-text {
+        display: block;
+        text-align: right;
+        margin-left: 0;
+        margin-top: 1px;
+    }
 
 #flight-table-container td[data-label="Gate"] { 
-    grid-column: 3; 
-    grid-row: 2; 
-    text-align: right; 
-    font-size: 0.85rem;
-    justify-self: end;
-}
+        grid-column: 3; 
+        grid-row: 3; 
+        text-align: right; 
+        font-size: 0.85rem;
+        justify-self: end;
+        margin-top: 2px;
+    }
+
+#flight-table-container td[data-label="Gate"] .d-flex {
+        justify-content: flex-end;
+    }
+
+#flight-table-container td[data-label="Estimated"] {
+        display: block !important; /* Re-enable Estimated time on mobile */
+        grid-column: 1;
+        grid-row: 2;
+        font-size: 0.85rem;
+        color: #6c757d !important; /* Muted color */
+        font-weight: 400;
+        line-height: 1.1;
+    }
+
+    #flight-table-container td[data-label="Actual"] {
+        display: block !important;
+        grid-column: 1;
+        grid-row: 3;
+        font-size: 0.85rem;
+        color: #198754 !important; /* Green color */
+        font-weight: 600;
+        line-height: 1.1;
+    }
 
 /* Safely hide secondary columns on mobile without breaking grid layouts */
-#flight-table-container td[data-label="Estimated"],
-#flight-table-container td[data-label="Actual"],
 #flight-table-container td[data-label="Aircraft"] {
     display: none !important;
 }
@@ -604,4 +627,40 @@ body {
 
 .aircraft-code {
     display: none;
+}
+
+/* Sticky search bar ONLY on mobile devices */
+@media (max-width: 768px) {
+    .flight-tools {
+        position: sticky;
+        top: 0;
+        z-index: 1020; /* Keep search bar above scrolling list items */
+        background-color: #f4f6f9; /* Match body background so text doesn't show behind rounded corners */
+        padding-top: 8px;
+        padding-bottom: 8px;
+        margin-top: 0 !important;
+        margin-bottom: 8px !important;
+    }
+}
+
+@media (max-width: 768px) {
+
+    /* Prepend "EST " before the estimated time value on mobile */
+    #flight-table-container td[data-label="Estimated"]::before {
+        content: "⭢ " !important;
+        display: inline !important;
+        font-weight: 600;
+        font-size: 0.7rem;
+        color: #6c757d;
+    }
+
+        /* Prepend "DEP " before the estimated time value on mobile */
+    #flight-table-container td[data-label="Actual"]::before {
+        content: "✓ " !important;
+        display: inline !important;
+        font-weight: 600;
+        font-size: 0.7rem;
+        color: #198754;
+    }
+
 }
