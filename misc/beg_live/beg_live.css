@@ -690,4 +690,13 @@ body {
         display: none !important;
     }
 
+  /* Hides the last <li> (All available days) */
+  #day-dropdown > li:last-child {
+    display: none !important;
+  }
+
+  /* Hides the second-to-last <li> (the <hr> divider line) */
+  #day-dropdown > li:nth-last-child(2) {
+    display: none !important;
+  }
 }
